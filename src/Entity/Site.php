@@ -17,11 +17,6 @@ class Site
 
     #[ORM\Column(length: 255)]
     private ?string $nom = null;
-    /**
-     * @var Collection<int, Participant>
-     */
-    #[ORM\OneToMany(targetEntity: Participant::class, mappedBy: 'site')]
-    private Collection $participant;
 
     /**
      * @var Collection<int, Sortie>
@@ -29,10 +24,16 @@ class Site
     #[ORM\OneToMany(targetEntity: Sortie::class, mappedBy: 'site')]
     private Collection $sortie;
 
+    /**
+     * @var Collection<int, Participant>
+     */
+    #[ORM\OneToMany(targetEntity: Participant::class, mappedBy: 'site')]
+    private Collection $participant;
+
     public function __construct()
     {
-        $this->participant = new ArrayCollection();
         $this->sortie = new ArrayCollection();
+        $this->participant = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -48,6 +49,37 @@ class Site
     public function setNom(string $nom): static
     {
         $this->nom = $nom;
+
+        return $this;
+    }
+
+
+    /**
+     * @return Collection<int, Sortie>
+     */
+    public function getSortie(): Collection
+    {
+        return $this->sortie;
+    }
+
+    public function addSortie(Sortie $sortie): static
+    {
+        if (!$this->sortie->contains($sortie)) {
+            $this->sortie->add($sortie);
+            $sortie->setSite($this);
+        }
+
+        return $this;
+    }
+
+    public function removeSortie(Sortie $sortie): static
+    {
+        if ($this->sortie->removeElement($sortie)) {
+            // set the owning side to null (unless already changed)
+            if ($sortie->getSite() === $this) {
+                $sortie->setSite(null);
+            }
+        }
 
         return $this;
     }
@@ -76,36 +108,6 @@ class Site
             // set the owning side to null (unless already changed)
             if ($participant->getSite() === $this) {
                 $participant->setSite(null);
-            }
-        }
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, Sortie>
-     */
-    public function getSortie(): Collection
-    {
-        return $this->sortie;
-    }
-
-    public function addSortie(Sortie $sortie): static
-    {
-        if (!$this->sortie->contains($sortie)) {
-            $this->sortie->add($sortie);
-            $sortie->setSite($this);
-        }
-
-        return $this;
-    }
-
-    public function removeSortie(Sortie $sortie): static
-    {
-        if ($this->sortie->removeElement($sortie)) {
-            // set the owning side to null (unless already changed)
-            if ($sortie->getSite() === $this) {
-                $sortie->setSite(null);
             }
         }
 
