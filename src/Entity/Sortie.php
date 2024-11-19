@@ -34,10 +34,6 @@ class Sortie
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $infosSortie = null;
 
-    #[ORM\ManyToOne(inversedBy: 'Sortie')]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?Etat $etat = null;
-
     #[ORM\ManyToOne(inversedBy: 'sortie')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Lieu $lieu = null;
@@ -57,6 +53,9 @@ class Sortie
 
     #[ORM\Column(nullable: true)]
     private ?\DateTimeImmutable $modifiedAt = null;
+
+    #[ORM\Column(length: 255)]
+    private ?string $etat = null;
 
     public function __construct()
     {
@@ -141,18 +140,6 @@ class Sortie
         return $this;
     }
 
-    public function getEtat(): ?Etat
-    {
-        return $this->etat;
-    }
-
-    public function setEtat(?Etat $etat): static
-    {
-        $this->etat = $etat;
-
-        return $this;
-    }
-
     public function getLieu(): ?Lieu
     {
         return $this->lieu;
@@ -224,6 +211,18 @@ class Sortie
     public function setModifiedAt(?\DateTimeImmutable $modifiedAt): static
     {
         $this->modifiedAt = $modifiedAt;
+
+        return $this;
+    }
+
+    public function getEtat(): ?string
+    {
+        return $this->etat;
+    }
+
+    public function setEtat(string $etat): static
+    {
+        $this->etat = $etat;
 
         return $this;
     }

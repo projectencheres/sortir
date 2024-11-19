@@ -1,0 +1,91 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    Créer une sortie
+{% endblock %}
+
+{% block body %}
+    <div class="container my-5">
+            <h1 class="mb-4 text-center">
+                Créer une sortie
+            </h1>
+
+            {{ form_start(form) }}
+            <div class="row">
+                <!-- Colonne gauche -->
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        {{ form_label(form.nom, 'Nom de la sortie :') }}
+                        {{ form_widget(form.nom, {'attr': {'class': 'form-control' }}
+                        ) }}
+                    </div>
+                    <div class="mb-3">
+                        {{ form_label(form.dateHeureDebut, 'Date et heure de la sortie :') }}
+                        {{ form_widget(form.dateHeureDebut, {'attr': {'class': 'form-control' }}
+                        ) }}
+                    </div>
+                    <div class="mb-3">
+                        {{ form_label(form.dateLimiteInscription, 'Date limite d\'inscription :') }}
+                    {{ form_widget(form.dateLimiteInscription, {'attr': {'class': 'form-control' }}) }}
+                </div>
+                <div class="mb-3">
+                    {{ form_label(form.nbInscriptionsMax, 'Nombre de places :') }}
+                    {{ form_widget(form.nbInscriptionsMax, {'attr': {'class': 'form-control' }}) }}
+                </div>
+                <div class="mb-3">
+                    {{ form_label(form.duree, 'Durée :') }}
+                    <div class="d-flex">
+                        {{ form_widget(form.duree, {'attr': {'class': 'form-control me-2', 'style': 'max-width: 80px;' }}) }}
+                        <span class="align-self-center">minutes</span>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    {{ form_label(form.infosSortie, 'Description et infos :') }}
+                    {{ form_widget(form.infosSortie, {'attr': {'class': 'form-control', 'rows': 5 }}) }}
+                </div>
+            </div>
+
+            <!-- Colonne droite -->
+            <div class="col-md-6">
+                <div class="mb-3">
+                    {{ form_label(form.site, 'Ville organisatrice :') }}
+                    {{ form_widget(form.site, {'attr': {'class': 'form-control' }}) }}
+                </div>
+                <div class="mb-3">
+                    {{ form_label(form.lieu, 'Lieu :') }}
+                    <div class="d-flex">
+                        {{ form_widget(form.lieu, {'attr': {'class': 'form-control me-2' }}) }}
+                        <button type="button" class="btn btn-outline-secondary">
+                            <strong>+</strong>
+                        </button>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label>Rue :</label>
+                    <input type="text" class="form-control" placeholder="Rue du lieu (à définir)" disabled>
+                </div>
+                <div class="mb-3">
+                    <label>Code postal :</label>
+                    <input type="text" class="form-control" placeholder="Code postal (à définir)" disabled>
+                </div>
+                <div class="mb-3">
+                    <label>Latitude :</label>
+                    <input type="text" class="form-control" placeholder="Latitude (à définir)" disabled>
+                </div>
+                <div class="mb-3">
+                    <label>Longitude :</label>
+                    <input type="text" class="form-control" placeholder="Longitude (à définir)" disabled>
+                </div>
+            </div>
+        </div>
+
+        <!-- Boutons d'action -->
+        <div class="text-center mt-4">
+            <button type="submit" name="save" class="btn btn-primary me-2">Enregistrer</button>
+            <button type="submit" name="publish" class="btn btn-success me-2">Publier la sortie</button>
+            <a href="{{ path('app_home') }}" class="btn btn-secondary">Annuler</a>
+        </div>
+        {{ form_end(form) }}
+    </div>
+{% endblock %}
+            
