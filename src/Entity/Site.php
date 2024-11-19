@@ -30,10 +30,17 @@ class Site
     #[ORM\OneToMany(targetEntity: Participant::class, mappedBy: 'site')]
     private Collection $participant;
 
+    #[ORM\Column]
+    private ?\DateTimeImmutable $createdAt = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?\DateTimeImmutable $modifiedAt = null;
+
     public function __construct()
     {
         $this->sortie = new ArrayCollection();
         $this->participant = new ArrayCollection();
+        $this->createdAt = new \DateTimeImmutable();
     }
 
     public function getId(): ?int
@@ -110,6 +117,30 @@ class Site
                 $participant->setSite(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getCreatedAt(): ?\DateTimeImmutable
+    {
+        return $this->createdAt;
+    }
+
+    public function setCreatedAt(\DateTimeImmutable $createdAt): static
+    {
+        $this->createdAt = $createdAt;
+
+        return $this;
+    }
+
+    public function getModifiedAt(): ?\DateTimeImmutable
+    {
+        return $this->modifiedAt;
+    }
+
+    public function setModifiedAt(?\DateTimeImmutable $modifiedAt): static
+    {
+        $this->modifiedAt = $modifiedAt;
 
         return $this;
     }
