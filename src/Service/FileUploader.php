@@ -12,7 +12,7 @@ final class FileUploader
 
     public function __construct(ParameterBagInterface $parameterBag)
     {
-        $this->targetDirectory = $parameterBag->get('uploads_directory');
+        $this->targetDirectory = $parameterBag->get('photos_directory');
     }
 
     public function upload(UploadedFile $file): string {

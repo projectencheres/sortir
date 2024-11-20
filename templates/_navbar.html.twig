@@ -9,13 +9,13 @@
             <!-- Left-aligned links -->
             <ul class="navbar-nav">
                 <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="#">
+                    <a class="nav-link active" aria-current="page" href="{{ path('app_home') }}">
                         Accueil
                     </a>
                 </li>
                 {% if app.user %}
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ path('participant_profile_edit') }}">
+                        <a class="nav-link" href="{{ path('participant_profile') }}">
                             Mon Profil
                         </a>
                     </li>
@@ -23,16 +23,25 @@
             </ul>
             <!-- Right-aligned links -->
             <ul class="navbar-nav ms-auto">
-                <li class="nav-item">
-                    <a class="nav-link" href="#" title="S'inscrire">
-                        S'inscrire
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#" title="Se connecter">
-                        Se connecter
-                    </a>
-                </li>
+                {% if not app.user %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ path('app_register') }}" title="S'inscrire">
+                            S'inscrire
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ path('app_login') }}" title="Se connecter">
+                            Se connecter
+                        </a>
+                    </li>
+                {% else %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ path('app_logout') }}" title="Se deconnecter">
+                            Se deconnecter
+                        </a>
+                    </li>
+
+                {% endif %}
             </ul>
         </div>
     </div>
