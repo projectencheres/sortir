@@ -17,7 +17,7 @@ use Symfony\Component\Routing\Attribute\Route;
 #[Route('/profile', name: 'participant_')]
 class ParticipantController extends AbstractController
 {
-    #[Route('/edit', name: 'profile_edit')]
+    #[Route('/edit', name: 'profile_edit', methods: ['GET', 'POST'])]
     public function editProfile(
         Request $request,
         EntityManagerInterface $entityManager,
@@ -25,36 +25,26 @@ class ParticipantController extends AbstractController
         UserPasswordHasherInterface $passwordHasher,
     ): Response
     {
-        // commented out lines to be deleted, had to create a user in order to test the profile page
-//        $dummyParticipant = new Participant();
-//        $dummyParticipant->setPseudo('pseudo');
-//        $dummyParticipant->setRoles(['ROLE_USER']);
-//        $dummyParticipant->setEmail('email@pseudo.fr');
-//        $dummyParticipant->setPassword($passwordHasher->hashPassword($dummyParticipant, '123456'));
-//
-//        $entityManager->persist($dummyParticipant);
-//        $entityManager->flush();
         $participant = $this->getUser();
-//
         // Ensure participant is logged in
         if (!$participant instanceof Participant) {
             throw $this->createAccessDeniedException();
         }
 
-        $form = $this->createForm(ParticipantType::class, $participant);
-        $form->handleRequest($request);
+        $participantForm = $this->createForm(ParticipantType::class, $participant);
+        $participantForm->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
+        if ($participantForm->isSubmitted() && $participantForm->isValid()) {
             $participant->setModifiedAt(new \DateTimeImmutable());
             // handle password
-            $newPassword = $form->get('password')->getData();
+            $newPassword = $participantForm->get('plainPassword')->getData();
             if ($newPassword) {
                 $hashedPassword = $passwordHasher->hashPassword($participant, $newPassword);
                 $participant->setPassword($hashedPassword);
             }
 
             // handle photo upload
-            $photo  = $form->get('photo')->getData();
+            $photo  = $participantForm->get('photo')->getData();
             if ($photo) {
                 $participant->setFilename($fileUploader->upload($photo));
             } else {
@@ -67,8 +57,7 @@ class ParticipantController extends AbstractController
         }
         return $this->render(
             'participant/profile.html.twig', [
-//                'participant' => $dummyParticipant,
-                'participant' => $participant,
+                'participantForm' => $participantForm,
             ]
         );
     }

@@ -1,21 +1,29 @@
 {% extends 'base.html.twig' %}
 
-{% block title %} Welcome {{ participant.pseudo }}{% endblock %}
+{% block title %} Welcome {{ participantForm.pseudo }}{% endblock %}
 
 {% block body %}
-    <h1>Mon profil</h1>
+    <h4>Mon profil</h4>
 
-    {{ form_start(form, {'attr': {'enctype': 'multipart/form_data'}}) }}
-        {{ form_row(form.pseudo) }}
-        {{ form_row(form.prenom) }}
-        {{ form_row(form.nom) }}
-        {{ form_row(form.telephone) }}
-        {{ form_row(form.email) }}
-        {{ form_row(form.password) }}
-        {{ form_row(form.confirmPassword) }}
-        {{ form_row(form.city) }}
-        {{ form_row(form.photo) }}
+    {% if app.flashes('success') %}
+        <div class="alert alert-success">
+            {% for message in app.flashes('success') %}
+                <p>{{ message }}</p>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    {{ form_start(participantForm, {'attr': {'enctype': 'multipart/form-data'}}) }}
+        {{ form_row(participantForm.pseudo) }}
+        {{ form_row(participantForm.prenom) }}
+        {{ form_row(participantForm.nom) }}
+        {{ form_row(participantForm.telephone) }}
+        {{ form_row(participantForm.email) }}
+        {{ form_row(participantForm.password) }}
+        {{ form_row(participantForm.plainPassword) }}
+        {{ form_row(participantForm.site) }}
+        {{ form_row(participantForm.photo) }}
         <button class="btn btn-sm btn-primary">Enregistrer</button>
-    {{ form_end(form) }}
+    {{ form_end(participantForm) }}
 
 {% endblock %}
