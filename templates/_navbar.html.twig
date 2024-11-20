@@ -17,11 +17,13 @@
                         Accueil
                     </a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">
-                        Mon Profil
-                    </a>
-                </li>
+                {% if app.user %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ path('participant_profile_edit') }}">
+                            Mon Profil
+                        </a>
+                    </li>
+                {% endif %}
             </ul>
             <!-- Right-aligned links -->
             <ul class="navbar-nav ms-auto">
