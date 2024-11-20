@@ -57,7 +57,7 @@ class SecurityController extends AbstractController
             $entityManager->flush();
 
             // Rediriger ou afficher un message de succès
-            return $this->redirectToRoute('app_login');
+            return $this->redirectToRoute('participant_edit');
         }
 
         return $this->render('security/register.html.twig', [

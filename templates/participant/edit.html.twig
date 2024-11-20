@@ -1,0 +1,32 @@
+{% extends 'base.html.twig' %}
+
+{% block title %} Sortir - Modification de l'utilisateur {% endblock %}
+
+{% block body %}
+    <form method="post">
+        {% if app.flashes('success') %}
+            <div class="alert alert-success">
+                {% for message in app.flashes('success') %}
+                    <p>{{ message }}</p>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        {{ form_start(participantForm) }}
+
+        {{ form_row(participantForm.pseudo) }}
+        {{ form_row(participantForm.prenom) }}
+        {{ form_row(participantForm.nom) }}
+        {{ form_row(participantForm.telephone) }}
+        {{ form_row(participantForm.email) }}
+        {{ form_row(participantForm.site) }}
+        {{ form_row(participantForm.photo) }}
+
+        <div class="col-12 mt-4">
+            <button class="btn btn-sm btn-primary" type="submit">Enregistrer</button>
+            <a href="{{ path('participant_profile') }}" class="btn btn-sm btn-secondary">Annuler</a>
+        </div>
+        {{ form_end(participantForm) }}
+
+    </form>
+{% endblock %}

@@ -9,6 +9,8 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
+use Symfony\Component\Validator\Constraints as Assert;
+
 #[ORM\Entity(repositoryClass: ParticipantRepository::class)]
 #[ORM\UniqueConstraint(name: 'UNIQ_IDENTIFIER_PSEUDO', fields: ['pseudo'])]
 #[ORM\UniqueConstraint(name: 'UNIQ_IDENTIFIER_EMAIL', fields: ['email'])]
@@ -45,8 +47,8 @@ class Participant implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 255)]
     private ?string $prenom = null;
 
-    #[ORM\Column]
-    private ?int $telephone = null;
+    #[ORM\Column(length: 20)]
+    #[Assert\Regex(pattern: "/^\+?[0-9]{1,4}[-. ]?\(?\d{1,3}\)?[-. ]?\d{1,3}[-. ]?\d{1,4}$/", message: "Le numéro de téléphone est invalide.")]    private ?string $telephone = null;
 
     #[ORM\Column(length: 255)]
     private ?string $email = null;
@@ -56,6 +58,9 @@ class Participant implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column(nullable: true)]
     private ?bool $actif = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $filename = null;
 
     /**
      * @var Collection<int, Sortie>
@@ -189,7 +194,7 @@ class Participant implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function getTelephone(): ?int
+    public function getTelephone(): ?string
     {
         return $this->telephone;
     }
@@ -295,5 +300,15 @@ class Participant implements UserInterface, PasswordAuthenticatedUserInterface
         $this->modifiedAt = $modifiedAt;
 
         return $this;
+    }
+
+    public function getFilename(): ?string
+    {
+        return $this->filename;
+    }
+
+    public function setFilename(?string $filename): void
+    {
+        $this->filename = $filename;
     }
 }
