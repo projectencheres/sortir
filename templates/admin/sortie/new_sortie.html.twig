@@ -6,26 +6,24 @@
 
 {% block body %}
     <div class="container my-5">
-            <h1 class="mb-4 text-center">
-                Créer une sortie
-            </h1>
+        <h1 class="mb-4 text-center">
+            Créer une sortie
+        </h1>
 
-            {{ form_start(form) }}
-            <div class="row">
-                <!-- Colonne gauche -->
-                <div class="col-md-6">
-                    <div class="mb-3">
-                        {{ form_label(form.nom, 'Nom de la sortie :') }}
-                        {{ form_widget(form.nom, {'attr': {'class': 'form-control' }}
-                        ) }}
-                    </div>
-                    <div class="mb-3">
-                        {{ form_label(form.dateHeureDebut, 'Date et heure de la sortie :') }}
-                        {{ form_widget(form.dateHeureDebut, {'attr': {'class': 'form-control' }}
-                        ) }}
-                    </div>
-                    <div class="mb-3">
-                        {{ form_label(form.dateLimiteInscription, 'Date limite d\'inscription :') }}
+        {{ form_start(form) }}
+        <div class="row">
+            <!-- Colonne gauche -->
+            <div class="col-md-6">
+                <div class="mb-3">
+                    {{ form_label(form.nom, 'Nom de la sortie :') }}
+                    {{ form_widget(form.nom, {'attr': {'class': 'form-control' }}) }}
+                </div>
+                <div class="mb-3">
+                    {{ form_label(form.dateHeureDebut, 'Date et heure de la sortie :') }}
+                    {{ form_widget(form.dateHeureDebut, {'attr': {'class': 'form-control' }}) }}
+                </div>
+                <div class="mb-3">
+                    {{ form_label(form.dateLimiteInscription, 'Date limite d\'inscription :') }}
                     {{ form_widget(form.dateLimiteInscription, {'attr': {'class': 'form-control' }}) }}
                 </div>
                 <div class="mb-3">
@@ -51,31 +49,85 @@
                     {{ form_label(form.site, 'Ville organisatrice :') }}
                     {{ form_widget(form.site, {'attr': {'class': 'form-control' }}) }}
                 </div>
-                <div class="mb-3">
-                    {{ form_label(form.lieu, 'Lieu :') }}
-                    <div class="d-flex">
-                        {{ form_widget(form.lieu, {'attr': {'class': 'form-control me-2' }}) }}
-                        <button type="button" class="btn btn-outline-secondary">
-                            <strong>+</strong>
-                        </button>
+                
+                <div class="mb-3 row align-items-center">
+                    <!-- Champ des lieux existants -->
+                    <div class="col">
+                        <div id="lieu-existant">
+                            {{ form_widget(form.lieu, {'attr': {
+                                'class': 'form-control',
+                                'data-lieux': lieux|json_encode
+                                }
+                            }) }}
+                        </div>
+                    </div>
+                    <!-- Case à cocher -->
+                    <div class="col-auto">
+                        {{ form_widget(form.utiliserLieuExistant, {'attr': {'class': 'form-check-input', 'id': 'checkbox-lieu-existant'}}) }}
+                        {{ form_label(form.utiliserLieuExistant, 'Sélectionner un lieu existant', {'label_attr': {'class': 'form-check-label ms-1'}}) }}
                     </div>
                 </div>
-                <div class="mb-3">
-                    <label>Rue :</label>
-                    <input type="text" class="form-control" placeholder="Rue du lieu (à définir)" disabled>
+
+                <!-- Informations du lieu sélectionné -->
+                <div class="mt-3">
+                    <div class="mb-3">
+                        <label>Rue :</label>
+                        <input type="text" id="info-rue" class="form-control" readonly>
+                    </div>
+                    <div class="mb-3">
+                        <label>Ville :</label>
+                        <input type="text" id="info-ville" class="form-control" readonly>
+                    </div>
+                    <div class="mb-3">
+                        <label>Code postal :</label>
+                        <input type="text" id="info-code-postal" class="form-control" readonly>
+                    </div>
+                    <div class="mb-3">
+                        <label>Latitude :</label>
+                        <input type="text" id="info-latitude" class="form-control" readonly>
+                    </div>
+                    <div class="mb-3">
+                        <label>Longitude :</label>
+                        <input type="text" id="info-longitude" class="form-control" readonly>
+                    </div>
                 </div>
-                <div class="mb-3">
-                    <label>Code postal :</label>
-                    <input type="text" class="form-control" placeholder="Code postal (à définir)" disabled>
-                </div>
-                <div class="mb-3">
-                    <label>Latitude :</label>
-                    <input type="text" class="form-control" placeholder="Latitude (à définir)" disabled>
-                </div>
-                <div class="mb-3">
-                    <label>Longitude :</label>
-                    <input type="text" class="form-control" placeholder="Longitude (à définir)" disabled>
-                </div>
+
+                <!-- Si nouveau lieu est choisi --> 
+                    <div id="nouveau-lieu" class="mt-4" style="display: none;">
+                        <h5 class="text-muted">
+                            Ajouter un nouveau lieu
+                        </h5>
+                        <div class="mb-3">
+                            {{ form_label(form.nouveauLieu.nom, 'Nom du lieu :') }}
+                            {{ form_widget(form.nouveauLieu.nom, {'attr': {'class': 'form-control' }}
+                            ) }}
+                        </div>
+                        <div class="mb-3">
+                            {{ form_label(form.nouveauLieu.rue, 'Rue :') }}
+                            {{ form_widget(form.nouveauLieu.rue, {'attr': {'class': 'form-control' }}
+                            ) }}
+                        </div>
+                        <div class="mb-3">
+                            {{ form_label(form.nouveauLieu.ville, 'Ville :') }}
+                            {{ form_widget(form.nouveauLieu.ville, {'attr': {'class': 'form-control' }}
+                            ) }}
+                        </div>
+                        <div class="mb-3">
+                            {{ form_label(form.nouveauLieu.codePostal, 'Code postal :') }}
+                            {{ form_widget(form.nouveauLieu.codePostal, {'attr': {'class': 'form-control' }}
+                            ) }}
+                        </div>
+                        <div class="mb-3">
+                            {{ form_label(form.nouveauLieu.latitude, 'Latitude :') }}
+                            {{ form_widget(form.nouveauLieu.latitude, {'attr': {'class': 'form-control' }}
+                            ) }}
+                        </div>
+                        <div class="mb-3">
+                            {{ form_label(form.nouveauLieu.longitude, 'Longitude :') }}
+                            {{ form_widget(form.nouveauLieu.longitude, {'attr': {'class': 'form-control' }}
+                            ) }}
+                        </div>
+                    </div>
             </div>
         </div>
 
@@ -87,5 +139,51 @@
         </div>
         {{ form_end(form) }}
     </div>
-{% endblock %}
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const checkboxLieuExistant = document.querySelector('[name="sortie[utiliserLieuExistant]"]');
+            const lieuExistantDiv = document.getElementById('lieu-existant');
+            const nouveauLieuDiv = document.getElementById('nouveau-lieu');
+            const lieuSelect = document.querySelector('#sortie_lieu');
+            const lieuxData = JSON.parse(lieuSelect.getAttribute('data-lieux'));
             
+            const infoRue = document.getElementById('info-rue');
+            const infoVille = document.getElementById('info-ville');
+            const infoCodePostal = document.getElementById('info-code-postal');
+            const infoLatitude = document.getElementById('info-latitude');
+            const infoLongitude = document.getElementById('info-longitude');
+
+            function toggleLieuFields() {
+                if (checkboxLieuExistant.checked) {
+                    lieuExistantDiv.style.display = 'block';
+                    nouveauLieuDiv.style.display = 'none';
+                } else {
+                    lieuExistantDiv.style.display = 'none';
+                    nouveauLieuDiv.style.display = 'block';
+                }
+            }
+
+            function updateLieuInfos() {
+                const lieuId = lieuSelect.value;
+                const lieuInfos = lieuxData[lieuId] || {};
+
+                infoRue.value = lieuInfos.rue || '';
+                infoVille.value = lieuInfos.ville || '';
+                infoCodePostal.value = lieuInfos.codePostal || '';
+                infoLatitude.value = lieuInfos.latitude || '';
+                infoLongitude.value = lieuInfos.longitude || '';
+            }
+
+            // Initialisation au chargement
+            toggleLieuFields();
+            updateLieuInfos();
+
+            // Écouteur de changement de sélection
+            lieuSelect.addEventListener('change', updateLieuInfos);
+
+            // Gestion du changement de case à cocher
+            checkboxLieuExistant.addEventListener('change', toggleLieuFields);
+        });
+    </script>
+{% endblock %}
