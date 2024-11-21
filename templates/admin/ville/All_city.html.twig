@@ -1,0 +1,96 @@
+{% extends 'base.html.twig' %}
+{% block title %}
+    Gestion des villes
+{% endblock %}
+{% block body %}
+<div class="container text-center">
+    <h1 class="mb-4">Gérer les villes</h1>
+</div>
+
+<div class="container mb-4">
+    <form method="get" class="row g-3 align-items-center">
+        <!-- Champ de recherche -->
+        <div class="col-auto">
+            <label for="search" class="col-form-label">Filtrer les villes</label>
+        </div>
+        <div class="col-auto">
+            <input type="text" id="search" name="search" value="{{ app.request.get('search') }}" class="form-control" placeholder="Nom contient...">
+        </div>
+        <!-- Bouton Rechercher -->
+        <div class="col-auto">
+            <button type="submit" class="btn btn-primary">Rechercher</button>
+        </div>
+        <!-- Bouton Ajouter -->
+        <div class="col-auto">
+            <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addVilleModal">Ajouter</button>
+        </div>
+    </form>
+</div>
+
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>
+                    Ville
+                </th>
+                <th>
+                    Code postal
+                </th>
+                <th>
+                    Actions
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for ville in villes %}
+                <tr>
+                    <td>
+                        {{ ville.nom }}
+                    </td>
+                    <td>
+                        {{ ville.codePostal }}
+                    </td>
+                    <td>
+                        <a href="#" class="btn btn-sm btn-warning">
+                            Modifier
+                        </a>
+                        <a href="#" class="btn btn-sm btn-danger">
+                            Supprimer
+                        </a>
+                    </td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="3" class="text-center">
+                        Aucune ville trouvée.
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <!-- Bouton pour afficher le modal -->
+    {# <button type="button" class="btn btn-success mt-4" data-bs-toggle="modal" data-bs-target="#addVilleModal">
+        Ajouter une ville
+    </button> #}
+    <!-- Modal d'ajout -->
+    <div class="modal fade" id="addVilleModal" tabindex="-1" aria-labelledby="addVilleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addVilleModalLabel">
+                        Ajouter une ville
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    {{ form_start(form) }}
+                    {{ form_row(form.nom) }}
+                    {{ form_row(form.codePostal) }}
+                    {{ form_row(form.save) }}
+                    {{ form_end(form) }}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+    

@@ -1,0 +1,27 @@
+
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    Ajouter une Ville
+{% endblock %}
+
+{% block body %}
+    <h1>
+        Ajouter une ville
+    </h1>
+
+    {# Afficher les messages flash si disponibles #}
+    {% for message in app.flashes('success') %}
+        <div class="alert alert-success">
+            {{ message }}
+        </div>
+    {% endfor %}
+
+    {# Afficher le formulaire de la ville #}
+    {{ form_start(form) }}
+    {{ form_row(form.nom) }}
+    {{ form_row(form.codePostal) }}
+    {{ form_row(form.submit) }}
+    {{ form_end(form) }}
+{% endblock %}
+

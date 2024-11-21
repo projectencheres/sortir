@@ -10,7 +10,7 @@ use Doctrine\Migrations\AbstractMigration;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-final class Version20241119091040 extends AbstractMigration
+final class Version20241119134910 extends AbstractMigration
 {
     public function getDescription(): string
     {
@@ -28,8 +28,8 @@ final class Version20241119091040 extends AbstractMigration
     public function down(Schema $schema): void
     {
         // this down() migration is auto-generated, please modify it to your needs
-        $this->addSql('ALTER TABLE site DROP created_at, DROP modified_at');
-        $this->addSql('ALTER TABLE sortie DROP created_at, DROP modified_at');
         $this->addSql('ALTER TABLE participant DROP created_at, DROP modified_at');
+        $this->addSql('ALTER TABLE sortie DROP created_at, DROP modified_at');
+        $this->addSql('ALTER TABLE site DROP created_at, DROP modified_at');
     }
 }
