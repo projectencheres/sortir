@@ -16,22 +16,27 @@ use Symfony\Component\Security\Http\RememberMe\RememberMeHandlerInterface;
 class SecurityController extends AbstractController
 {
     #[Route('/login', name: 'app_login')]
-    public function login(AuthenticationUtils $authenticationUtils, RememberMeHandlerInterface $rememberMeHandler): Response
-    {
-        // obtenir l'erreur de connexion si elle existe
+    public function login(
+        AuthenticationUtils $authenticationUtils,
+        RememberMeHandlerInterface $rememberMeHandler
+    ): Response {
+        if ($this->getUser()) {
+            // Gérer le Remember Me si l'utilisateur est connecté
+            if ($this->getUser()) {
+                $rememberMeHandler->createRememberMeCookie($this->getUser());
+            }
+            return $this->redirectToRoute('app_home');
+        }
+
+        // Récupérer l'erreur de connexion s'il y en a une
         $error = $authenticationUtils->getLastAuthenticationError();
 
-        // dernier nom d'utilisateur saisi
+        // Dernier nom d'utilisateur saisi
         $lastUsername = $authenticationUtils->getLastUsername();
-
-        // Gérer le cookie "Remember Me"
-        if ($this->getUser()) {
-            $rememberMeHandler->createRememberMeCookie($this->getUser());
-        }
 
         return $this->render('security/login.html.twig', [
             'last_username' => $lastUsername,
-            'error'         => $error,
+            'error' => $error,
         ]);
     }
 

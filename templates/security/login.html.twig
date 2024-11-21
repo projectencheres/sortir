@@ -4,10 +4,23 @@
     <h1>Connexion</h1>
     <form action="{{ path('app_login') }}" method="post">
         <label for="username">Login (Email ou Pseudo)</label>
-        <input type="text" id="username" name="_username" value="{{ last_username }}" required>
+                    <input type="text" 
+                id="username" 
+                name="_username" 
+                value="{{ last_username }}" 
+                placeholder="Email ou Pseudo" 
+                required 
+                autofocus>
         
         <label for="password">Mot de passe</label>
-        <input type="password" id="password" name="_password" required>
+                   <input type="password" 
+                id="password" 
+                name="_password" 
+                required>
+
+                            <label>
+                <input type="checkbox" name="_remember_me"> Se souvenir de moi
+            </label>
 
         <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
         
@@ -18,3 +31,37 @@
         <div>{{ error.messageKey|trans(error.messageData, 'security') }}</div>
     {% endif %}
 {% endblock %} 
+
+
+{#         <div >
+            <label for="username">Email ou Pseudo</label>
+            <input type="text" 
+                id="username" 
+                name="_username" 
+                value="{{ last_username }}" 
+                class="form-control" 
+                placeholder="Email ou Pseudo" 
+                required 
+                autofocus>
+        </div>
+
+        <div >
+            <label for="password">Mot de passe</label>
+            <input type="password" 
+                id="password" 
+                name="_password" 
+                class="form-control" 
+                required>
+        </div>
+
+        <div class="checkbox mb-3">
+            <label>
+                <input type="checkbox" name="_remember_me"> Se souvenir de moi
+            </label>
+        </div>
+
+        <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+
+        <button class="btn btn-lg btn-primary" type="submit">
+            Se connecter
+        </button> #}

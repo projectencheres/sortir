@@ -6,7 +6,6 @@ security:
     app_user_provider:
       entity:
         class: App\Entity\Participant
-        property: email # Utilisation du email comme identifiant
 
   firewalls:
     dev:
@@ -22,10 +21,11 @@ security:
         enable_csrf: true
       remember_me:
         secret: "%kernel.secret%"
-        lifetime: 604800 # 1 semaine
+        lifetime: 604800
         path: /
-        name: ~ # ~ signifie qu'on utilise le nom de cookie par defaut (REMEMBERME)
-        always_remember_me: false
+        samesite: "lax"
+        secure: false # Désactivé pour HTTP
+        name: REMEMBERME # Nom du cookie
       logout:
         path: app_logout
         target: app_login # Redirection après déconnexion

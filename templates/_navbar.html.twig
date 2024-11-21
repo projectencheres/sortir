@@ -1,49 +1,59 @@
 <nav class="navbar navbar-expand-lg">
-    <div class="container-fluid">
-        <!-- Toggler button for small screens -->
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <!-- Navbar content -->
-        <div class="collapse navbar-collapse" id="navbarNav">
-            <!-- Left-aligned links -->
-            <ul class="navbar-nav">
-                <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="{{ path('app_home') }}">
-                        Accueil
-                    </a>
-                </li>
-                {% if app.user %}
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ path('participant_profile') }}">
-                            Mon Profil
-                        </a>
-                    </li>
-                {% endif %}
-            </ul>
-            <!-- Right-aligned links -->
-            <ul class="navbar-nav ms-auto">
-                {% if not app.user %}
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ path('app_register') }}" title="S'inscrire">
-                            S'inscrire
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ path('app_login') }}" title="Se connecter">
-                            Se connecter
-                        </a>
-                    </li>
-                {% else %}
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ path('app_logout') }}" title="Se deconnecter">
-                            Se deconnecter
-                        </a>
-                    </li>
+	<div
+		class="container-fluid">
+		<!-- Toggler button for small screens -->
+		<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+			<span class="navbar-toggler-icon"></span>
+		</button>
+		<!-- Navbar content -->
+		<div
+			class="collapse navbar-collapse" id="navbarNav">
+			<!-- Left-aligned links -->
+			<ul class="navbar-nav">
+				<li class="nav-item">
+					<a class="nav-link active" aria-current="page" href="{{ path('app_home') }}">
+						Accueil
+					</a>
+				</li>
+				{% if app.user %}
+					<li class="nav-item">
+						<a class="nav-link" href="{{ path('participant_profile') }}">
+							Mon Profil
+						</a>
+					</li>
+				{% endif %}
+			</ul>
+			<!-- Debug info -->
+			<div style="display:block">
+				Is logged:
+				{{ app.user ? 'yes' : 'no' }}
+				User:
+				{{ app.user ? app.user.userIdentifier : 'none' }}
+				Session:
+				{{ app.session.id }}
+			</div>
+			<!-- Right-aligned links -->
+			<ul class="navbar-nav ms-auto">
+				{% if not app.user %}
+					<li class="nav-item">
+						<a class="nav-link" href="{{ path('app_register') }}" title="S'inscrire">
+							S'inscrire
+						</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link" href="{{ path('app_login') }}" title="Se connecter">
+							Se connecter
+						</a>
+					</li>
+				{% else %}
+					<li class="nav-item">
+						<a class="nav-link" href="{{ path('app_logout') }}" title="Se deconnecter">
+							Se deconnecter
+						</a>
+					</li>
 
-                {% endif %}
-            </ul>
-        </div>
-    </div>
+				{% endif %}
+			</ul>
+		</div>
+	</div>
 </nav>
-

@@ -5,6 +5,7 @@ namespace App\Repository;
 use App\Entity\Participant;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use Symfony\Bridge\Doctrine\Security\User\UserLoaderInterface;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\PasswordUpgraderInterface;
@@ -12,11 +13,23 @@ use Symfony\Component\Security\Core\User\PasswordUpgraderInterface;
 /**
  * @extends ServiceEntityRepository<Participant>
  */
-class ParticipantRepository extends ServiceEntityRepository implements PasswordUpgraderInterface
+class ParticipantRepository extends ServiceEntityRepository implements PasswordUpgraderInterface, UserLoaderInterface
 {
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Participant::class);
+    }
+
+    public function loadUserByIdentifier(string $identifier): ?Participant
+    {
+        $qb = $this->createQueryBuilder('p');
+
+        return $qb
+            ->where('p.email = :identifier')
+            ->orWhere('p.pseudo = :identifier')
+            ->setParameter('identifier', $identifier)
+            ->getQuery()
+            ->getOneOrNullResult();
     }
 
     /**
