@@ -9,7 +9,6 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\Routing\Attribute\Route;
 
 #[Route('/participant', name: 'participant_')]
@@ -56,7 +55,7 @@ class ParticipantController extends AbstractController
 
         if($participantForm->isSubmitted() && $participantForm->isValid()) {
 
-            $photo = $participantForm->get('photo')->getData();
+            $photo = $participantForm->get('profileImage')->getData();
             if(($participantForm->has('deleteImage') && $participantForm['deleteImage']->getData()) || $photo) {
                 $fileUploader->delete($participant->getFilename(), $this->getParameter('photos_directory'));
                 if($photo) {
