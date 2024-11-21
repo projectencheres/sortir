@@ -11,17 +11,23 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
+use Symfony\Component\Security\Http\RememberMe\RememberMeHandlerInterface;
 
 class SecurityController extends AbstractController
 {
     #[Route('/login', name: 'app_login')]
-    public function login(AuthenticationUtils $authenticationUtils): Response
+    public function login(AuthenticationUtils $authenticationUtils, RememberMeHandlerInterface $rememberMeHandler): Response
     {
         // obtenir l'erreur de connexion si elle existe
         $error = $authenticationUtils->getLastAuthenticationError();
 
         // dernier nom d'utilisateur saisi
         $lastUsername = $authenticationUtils->getLastUsername();
+
+        // Gérer le cookie "Remember Me"
+        if ($this->getUser()) {
+            $rememberMeHandler->createRememberMeCookie($this->getUser());
+        }
 
         return $this->render('security/login.html.twig', [
             'last_username' => $lastUsername,
@@ -30,9 +36,19 @@ class SecurityController extends AbstractController
     }
 
     #[Route('/logout', name: 'app_logout')]
-    public function logout(): void
+    public function logout(Request $request): Response
     {
-        // le contrôleur peut rester vide, il sera intercepté par la sécurité
+        // Nettoyage supplémentaire si nécessaire
+        $session = $request->getSession();
+        $session->clear();            // Vide la session
+        $session->invalidate();       // Invalide la session
+
+        $response = new Response();
+        $response->headers->clearCookie('REMEMBERME');
+        $response->headers->clearCookie('PHPSESSID');
+
+        // Redirection vers la page de login
+        return $this->redirectToRoute('app_login');
     }
 
     #[Route('/register', name: 'app_register')]

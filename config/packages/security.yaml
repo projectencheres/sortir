@@ -23,8 +23,16 @@ security:
       remember_me:
         secret: "%kernel.secret%"
         lifetime: 604800 # 1 semaine
+        path: /
+        name: ~ # ~ signifie qu'on utilise le nom de cookie par defaut (REMEMBERME)
+        always_remember_me: false
       logout:
         path: app_logout
+        target: app_login # Redirection après déconnexion
+        invalidate_session: true # Invalide la session
+        delete_cookies:
+          remember_me: ~ # ~ signifie qu'on utilise la config par defaut
+          session: ~
 
   access_control:
     - { path: ^/login, roles: PUBLIC_ACCESS }
