@@ -80,3 +80,6 @@
 
 # .idea exclusion
 /.idea/
+
+# ide helper
+/.vscode/
