@@ -1,0 +1,4 @@
+{{ form_start(form, {'action': path('app_sortir_cancel', {id: sortie.id}), 'attr': {'id': 'cancel-form'}}) }}
+    {{ form_row(form.motif) }}
+    <button type="submit" class="btn btn-danger">Confirmer l'annulation</button>
+{{ form_end(form) }}

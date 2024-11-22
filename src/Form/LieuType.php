@@ -18,27 +18,27 @@ class LieuType extends AbstractType
         $builder
             ->add('nom',TextType::class, [
                 'label' => 'Nom du lieu',
-                'required' => true,
+                'required' => false,
             ])
             ->add('rue', TextType::class, [
                 'label' => 'Rue',
-                'required' => true,
+                'required' => false,
             ])
             ->add('longitude', NumberType::class, [
                 'label' => 'Longitude',
-                'required' => true,
+                'required' => false,
             ])
             ->add('latitude', NumberType::class, [
                 'label' => 'Latitude',
-                'required' => true,
+                'required' => false,
             ])
             ->add('ville', TextType::class, [
                 'label' => 'Ville',
-                'required' => true,
+                'required' => false,
             ])
             ->add('codePostal', IntegerType::class, [
                 'label' => 'Code Postal',
-                'required' => true,
+                'required' => false,
             ])
         ;
     }

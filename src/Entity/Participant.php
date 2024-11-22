@@ -77,10 +77,17 @@ class Participant implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(nullable: true)]
     private ?\DateTimeImmutable $modifiedAt = null;
 
+    /**
+     * @var Collection<int, Sortie>
+     */
+    #[ORM\OneToMany(targetEntity: Sortie::class, mappedBy: 'organisateur')]
+    private Collection $participant;
+
     public function __construct()
     {
         $this->sortie = new ArrayCollection();
         $this->createdAt = new \DateTimeImmutable();
+        $this->participant = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -310,5 +317,39 @@ class Participant implements UserInterface, PasswordAuthenticatedUserInterface
     public function setFilename(?string $filename): void
     {
         $this->filename = $filename;
+    }
+
+    /**
+     * @return Collection<int, Sortie>
+     */
+    public function getParticipant(): Collection
+    {
+        return $this->participant;
+    }
+
+    public function addParticipant(Sortie $participant): static
+    {
+        if (!$this->participant->contains($participant)) {
+            $this->participant->add($participant);
+            $participant->setOrganisateur($this);
+        }
+
+        return $this;
+    }
+
+    public function removeParticipant(Sortie $participant): static
+    {
+        if ($this->participant->removeElement($participant)) {
+            // set the owning side to null (unless already changed)
+            if ($participant->getOrganisateur() === $this) {
+                $participant->setOrganisateur(null);
+            }
+        }
+
+        return $this;
+    }
+    public function __toString(): string
+    {
+        return $this->nom . ' ' . $this->prenom;
     }
 }

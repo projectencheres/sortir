@@ -7,7 +7,7 @@
     {# <h1 class="mb-4">Liste des Sorties</h1> #}
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h1>Liste des Sorties</h1>
-        <a href="{{ path('admin_sortir_create') }}" class="btn btn-success">Créer une sortie</a>
+        <a href="{{ path('app_sortie_create') }}" class="btn btn-success">Créer une sortie</a>
     </div>
     <div class="row">
         {% for sortie in sorties %}
@@ -21,11 +21,115 @@
                             <strong>État:</strong> {{ sortie.etat }}<br>
                             <strong>Nombre d'inscrits:</strong> {{ sortie.participants|length }} / {{ sortie.nbInscriptionsMax }}
                         </p>
+
+                        <!-- Modal Bootstrap -->
+                        <div class="modal fade" id="cancelModal" tabindex="-1" aria-labelledby="cancelModalLabel" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="cancelModalLabel">
+                                            Annuler une sortie
+                                        </h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div id="modal-form-content">
+                                            <!-- Le formulaire sera chargé ici via AJAX -->
+                                            <p>
+                                                Chargement du formulaire...
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Fin Modal Bootstrap -->
                         <div class="d-flex justify-content-between flex-wrap">
-                            <a href="#" class="btn btn-primary mb-2">S'inscrire</a>
+                            {# {% if sortie.participants|length < sortie.nbInscriptionsMax %}
+                                <a href="{{ path('app_sortir_subscribe', {id: sortie.id}) }}" class="btn btn-primary mb-2">
+                                    S'inscrire
+                                </a>
+                            {% else %}
+                                <a href="#" class="btn btn-secondary mb-2 disabled">Complet</a>
+                            {% endif %}
+                            <a href="{{ path('app_sortir_subscribe', {id: sortie.id}) }}" class="btn btn-primary mb-2">
+                                S'inscrire
+                            </a> #}
+                            
+                            {% if sortie.etat != 'Annulée' %}
+                                {% if sortie.participants|length < sortie.nbInscriptionsMax %}
+                                    {% if not sortie.participants.contains(app.user) %}
+                                        <a href="{{ path('app_sortir_subscribe', {id: sortie.id}) }}" class="btn btn-primary mb-2">
+                                            S'inscrire
+                                        </a>
+                                    {% else %}
+                                        <a href="#" class="btn btn-secondary mb-2 disabled">Déjà inscrit</a>
+                                    {% endif %}
+                                {% else %}
+                                    <a href="#" class="btn btn-secondary mb-2 disabled">Complet</a>
+                                {% endif %}
+                            {% endif %}
+
+                            {% if sortie.etat == 'Annulée' %}
+                                <a href="#" class="btn btn-secondary mb-2 disabled">Annulée</a>
+                            {% endif %}
+                            <!-- Bouton "Désinscrire" -->
+                            {% if sortie.participants.contains(app.user) and sortie.dateHeureDebut > "now"|date and app.user!= sortie.organisateur %}
+                                <a href="{{ path('app_sortir_unsubscribe', {id: sortie.id}) }}" class="btn btn-danger mb-2">
+                                    Désinscrire
+                                </a>
+                            {% endif %}
+
+                            <!-- Bouton "Voir détails" -->
+                            <a href="#" class="btn btn-secondary mb-2">Voir détails</a>
+
+                            <!-- Bouton "Modifier" (réservé à l'organisateur) -->
+                            {% if app.user == sortie.organisateur and sortie.dateHeureDebut > "now"|date and sortie.etat != 'Annulée' %}
+                                <a href="#" class="btn btn-warning mb-2">
+                                    Modifier
+                                </a>
+                            {% endif %}
+
+                            {% if app.user == sortie.organisateur and sortie.dateHeureDebut > "now"|date %}
+                                <a href="{{ path('app_sortir_delete', {id: sortie.id}) }}" class="btn btn-danger mb-2">
+                                    Supprimer
+                                </a>
+                            {% endif %}
+
+                            <!-- Bouton "Annuler" (réservé à l'organisateur) -->
+                            {% if app.user == sortie.organisateur and sortie.dateHeureDebut > "now"|date and sortie.etat != 'Annulée' %}
+                                <button class="btn btn-danger mb-2" data-bs-toggle="modal" data-bs-target="#cancelModal" data-id="{{ sortie.id }}">
+                                    Annuler
+                                </button>
+                            {% endif %}
+
+                            {# {% if sortie.participants|length < sortie.nbInscriptionsMax %}
+                                {% if not sortie.participants.contains(app.user) %}
+                                    <a href="{{ path('app_sortir_subscribe', {id: sortie.id}) }}" class="btn btn-primary mb-2">
+                                        S'inscrire
+                                    </a>
+                                {% else %}
+                                    <a href="#" class="btn btn-secondary mb-2 disabled">Déjà inscrit</a>
+                                {% endif %}
+                            {% else %}
+                                <a href="#" class="btn btn-secondary mb-2 disabled">Complet</a>
+                            {% endif %}
+
+                            {% if sortie.participants.contains(app.user) and sortie.dateHeureDebut > "now"|date %}
+                                <a href="{{ path('app_sortir_unsubscribe', {id: sortie.id}) }}" class="btn btn-danger mb-2">
+                                    Désinscrire
+                                </a>
+                            {% endif %}
                             <a href="#" class="btn btn-secondary mb-2">Voir détails</a>
                             <a href="#" class="btn btn-warning mb-2">Modifier</a>
-                            <a href="#" class="btn btn-danger mb-2">Annuler</a>
+                             {% if app.user == sortie.organisateur and sortie.dateHeureDebut > "now"|date %}
+                                <button class="btn btn-warning mb-2" data-bs-toggle="modal" data-bs-target="#cancelModal" 
+                                        data-id="{{ sortie.id }}">
+                                    Annuler
+                                </button>
+                            {% endif %} #}
+                            {# <a href="{{ path('app_sortir_unsubscribe', {id:sortie.id}) }}" class="btn btn-danger mb-2">Désinscrire</a> #}
                         </div>
                     </div>
                 </div>
@@ -39,4 +143,47 @@
         {% endfor %}
     </div>
 </div>
+{% endblock %}
+
+{% block javascripts %}
+{{ parent() }}
+    <script>
+        // Gestion du modal
+        document.addEventListener('DOMContentLoaded', () => {
+            const cancelModal = document.getElementById('cancelModal');
+            cancelModal.addEventListener('show.bs.modal', event => {
+                const button = event.relatedTarget;
+                const sortieId = button.getAttribute('data-id');
+
+                fetch(`/sortir/cancel/${sortieId}`)
+                    .then(response => response.text())
+                    .then(html => {
+                        document.getElementById('modal-form-content').innerHTML = html;
+
+                        // Ajouter la gestion de soumission du formulaire AJAX
+                        const form = document.getElementById('cancel-form');
+                        form.addEventListener('submit', event => {
+                            event.preventDefault();
+
+                            const formData = new FormData(form);
+                            fetch(form.action, {
+                                method: 'POST',
+                                body: formData,
+                            })
+                                .then(response => response.json())
+                                .then(data => {
+                                    if (data.success) {
+                                        alert(data.success);
+                                        window.location.reload();
+                                    } else if (data.error) {
+                                        alert(data.error);
+                                    }
+                                })
+                                .catch(error => console.error('Erreur :', error));
+                        });
+                    })
+                    .catch(error => console.error('Erreur :', error));
+            });
+        });
+    </script>
 {% endblock %}

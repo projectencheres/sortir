@@ -35,6 +35,26 @@
                         </a>
                     </li>
                 {% else %}
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">Admin</a>
+                        <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="{{ path('admin_sortir_create') }}">Créer une sortie</a></li>
+                        <li><a class="dropdown-item" href="{{ path('admin_sortir_index') }}">Listes des sorties</a></li>                        
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item" href="#">Créer un participant</a></li>
+                        <li><a class="dropdown-item" href="#">Liste des participants</a></li>
+                        </ul>
+                    </li>
+                    
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">Users</a>
+                        <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="{{ path('app_sortie_create' )}}">Créer une sortie</a></li>
+                        <li><a class="dropdown-item" href="{{ path('app_sortie_show') }}">Listes des sorties</a></li>                        
+                        {# <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item" href="#">Separated link</a></li> #}
+                        </ul>
+                    </li>
                     <li class="nav-item">
                         <a class="nav-link" href="{{ path('app_logout') }}" title="Se deconnecter">
                             Se deconnecter

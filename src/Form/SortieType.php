@@ -33,6 +33,7 @@ class SortieType extends AbstractType
             ->add('dateHeureDebut', DateTimeType::class, [
                 'label' => 'Date et heure de la sortie',
                 'widget' => 'single_text',
+                    // 'widget' => 'choice',
                 // 'format' => 'yyyy-MM-dd HH:mm',
             ])
             ->add('duree', IntegerType::class, [

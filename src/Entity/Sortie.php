@@ -57,6 +57,15 @@ class Sortie
     #[ORM\Column(length: 255)]
     private ?string $etat = null;
 
+    #[ORM\Column(nullable: true)]
+    private ?bool $is_subscribe = null;
+
+    #[ORM\ManyToOne(inversedBy: 'participant')]
+    private ?Participant $organisateur = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $motifAnnulation = null;
+
     public function __construct()
     {
         $this->participants = new ArrayCollection();
@@ -223,6 +232,42 @@ class Sortie
     public function setEtat(string $etat): static
     {
         $this->etat = $etat;
+
+        return $this;
+    }
+
+    public function isSubscribe(): ?bool
+    {
+        return $this->is_subscribe;
+    }
+
+    public function setSubscribe(?bool $is_subscribe): static
+    {
+        $this->is_subscribe = $is_subscribe;
+
+        return $this;
+    }
+
+    public function getOrganisateur(): ?Participant
+    {
+        return $this->organisateur;
+    }
+
+    public function setOrganisateur(?Participant $organisateur): static
+    {
+        $this->organisateur = $organisateur;
+
+        return $this;
+    }
+
+    public function getMotifAnnulation(): ?string
+    {
+        return $this->motifAnnulation;
+    }
+
+    public function setMotifAnnulation(?string $motifAnnulation): static
+    {
+        $this->motifAnnulation = $motifAnnulation;
 
         return $this;
     }
