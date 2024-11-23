@@ -80,3 +80,9 @@
 
 # .idea exclusion
 /.idea/
+
+# ide helper
+/.vscode/
+
+# profile images directory
+/public/images

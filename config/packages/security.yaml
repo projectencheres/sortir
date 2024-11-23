@@ -6,7 +6,6 @@ security:
     app_user_provider:
       entity:
         class: App\Entity\Participant
-        property: email # Utilisation du email comme identifiant
 
   firewalls:
     dev:
@@ -22,9 +21,18 @@ security:
         enable_csrf: true
       remember_me:
         secret: "%kernel.secret%"
-        lifetime: 604800 # 1 semaine
+        lifetime: 604800
+        path: /
+        samesite: "lax"
+        secure: false # Désactivé pour HTTP
+        name: REMEMBERME # Nom du cookie
       logout:
         path: app_logout
+        target: app_login # Redirection après déconnexion
+        invalidate_session: true # Invalide la session
+        delete_cookies:
+          remember_me: ~ # ~ signifie qu'on utilise la config par defaut
+          session: ~
 
   access_control:
     - { path: ^/login, roles: PUBLIC_ACCESS }

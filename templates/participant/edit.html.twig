@@ -3,7 +3,7 @@
 {% block title %} Sortir - Modification de l'utilisateur {% endblock %}
 
 {% block body %}
-    <form method="post">
+    <form method="post" enctype="multipart/form-data">
         {% if app.flashes('success') %}
             <div class="alert alert-success">
                 {% for message in app.flashes('success') %}
@@ -20,7 +20,7 @@
         {{ form_row(participantForm.telephone) }}
         {{ form_row(participantForm.email) }}
         {{ form_row(participantForm.site) }}
-        {{ form_row(participantForm.photo) }}
+        {{ form_row(participantForm.profileImage) }}
 
         <div class="col-12 mt-4">
             <button class="btn btn-sm btn-primary" type="submit">Enregistrer</button>

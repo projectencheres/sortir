@@ -8,7 +8,7 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 final class FileUploader
 {
-    private readonly string $targetDirectory;
+    private string $targetDirectory;
 
     public function __construct(ParameterBagInterface $parameterBag)
     {
