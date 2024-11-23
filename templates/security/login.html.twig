@@ -1,20 +1,43 @@
 {% extends 'base.html.twig' %}
+{% block title %}Connexion{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('css/login.css') }}">
+{% endblock %}
 
 {% block body %}
-    <h1>Connexion</h1>
-    <form action="{{ path('app_login') }}" method="post">
-        <label for="username">Login (Email ou Pseudo)</label>
-        <input type="text" id="username" name="_username" value="{{ last_username }}" required>
-        
-        <label for="password">Mot de passe</label>
-        <input type="password" id="password" name="_password" required>
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow">
+                <div class="card-header text-center bg-primary text-white">
+                    <h3>Connexion</h3>
+                </div>
+                <div class="card-body">
+                    <form action="{{ path('app_login') }}" method="post">
+                        <div class="mb-3">
+                            <label for="username" class="form-label">Login (Email ou Pseudo)</label>
+                            <input type="text" id="username" name="_username" value="{{ last_username }}" class="form-control" required placeholder="Entrez votre email ou pseudo">
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="password" class="form-label">Mot de passe</label>
+                            <input type="password" id="password" name="_password" class="form-control" required placeholder="Entrez votre mot de passe">
+                        </div>
 
-        <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
-        
-        <button type="submit">Se connecter</button>
-    </form>
-
-    {% if error %}
-        <div>{{ error.messageKey|trans(error.messageData, 'security') }}</div>
-    {% endif %}
-{% endblock %} 
+                        <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+                        
+                        <button type="submit" class="btn btn-primary w-100">Se connecter</button>
+                    </form>
+                    {% if error %}
+                        <div class="alert alert-danger mt-3" role="alert">
+                            {{ error.messageKey|trans(error.messageData, 'security') }}
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

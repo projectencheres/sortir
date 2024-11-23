@@ -66,7 +66,7 @@ class SortirController extends AbstractController
                 $entityManager->flush();
 
                 $this->addFlash('success', 'La sortie a été créée avec succès.');
-                return $this->redirectToRoute('app_sortir');
+                return $this->redirectToRoute('app_all_sorties');
             }
 
             return $this->render('sortir/create.html.twig', [
@@ -75,11 +75,11 @@ class SortirController extends AbstractController
             ]);
     }
 
-    #[Route('/sortie/show', name: 'app_sortie_show')]
+    #[Route('/sorties/list', name: 'app_all_sorties')]
     public function index(): Response
     {   
         $sorties = $this->sortieRepository->findAll();
-        return $this->render('sortir/show_sorties.html.twig', [
+        return $this->render('sortir/all_sorties.html.twig', [
             'sorties' => $sorties,
         ]);
     }
@@ -92,29 +92,29 @@ class SortirController extends AbstractController
 
         if (!$sortie) {
             $this->addFlash('error', 'La sortie demandée n\'existe pas.');
-            return $this->redirectToRoute('app_sortie_show');
+            return $this->redirectToRoute('app_all_sorties');
         }
 
         $participant = $this->participantRepository->find($this->getUser()->getId());
         //dd($participant);
         if (!$participant) {
             $this->addFlash('error', 'Utilisateur non trouvé.');
-            return $this->redirectToRoute('app_sortie_show');
+            return $this->redirectToRoute('app_all_sorties');
         }
 
         if ($sortie->getParticipants()->contains($participant)) {
             $this->addFlash('warning', 'Vous êtes déjà inscrit à cette sortie.');
-            return $this->redirectToRoute('app_sortie_show');
+            return $this->redirectToRoute('app_all_sorties');
         }
 
         if ($sortie->getDateLimiteInscription() < new \DateTimeImmutable()) {
             $this->addFlash('error', 'La date limite d\'inscription à cette sortie est dépassée.');
-            return $this->redirectToRoute('app_sortie_show');
+            return $this->redirectToRoute('app_all_sorties');
         }
 
         if ($sortie->getParticipants()->count() >= $sortie->getNbInscriptionsMax()) {
             $this->addFlash('error', 'Le nombre maximum de participants a été atteint.');
-            return $this->redirectToRoute('app_sortie_show');
+            return $this->redirectToRoute('app_all_sorties');
         }
 
         $sortie->addParticipant($participant);
@@ -124,7 +124,7 @@ class SortirController extends AbstractController
         $this->entityManager->flush();
 
         $this->addFlash('success', 'Vous êtes inscrit à la sortie avec succès.');
-        return $this->redirectToRoute('app_sortie_show');
+        return $this->redirectToRoute('app_all_sorties');
     }
 
     #[Route('/sortie/unsubscribe/{id}', name: 'app_sortir_unsubscribe')]
@@ -134,24 +134,24 @@ class SortirController extends AbstractController
 
         if (!$sortie) {
             $this->addFlash('error', 'La sortie demandée n\'existe pas.');
-            return $this->redirectToRoute('app_sortie_show');
+            return $this->redirectToRoute('app_all_sorties');
         }
 
         $participant = $this->participantRepository->find($this->getUser()->getId());
 
         if (!$participant) {
             $this->addFlash('error', 'Utilisateur non trouvé.');
-            return $this->redirectToRoute('app_sortie_show');
+            return $this->redirectToRoute('app_all_sorties');
         }
 
         if (!$sortie->getParticipants()->contains($participant)) {
             $this->addFlash('warning', 'Vous n\'êtes pas inscrit à cette sortie.');
-            return $this->redirectToRoute('app_sortie_show');
+            return $this->redirectToRoute('app_all_sorties');
         }
 
         if ($sortie->getDateLimiteInscription() <= new \DateTimeImmutable()) {
             $this->addFlash('error', 'La date limite de désinscription à cette sortie est dépassée.');
-            return $this->redirectToRoute('app_sortie_show');
+            return $this->redirectToRoute('app_all_sorties');
         }
 
         // Retirer le participant de la sortie
@@ -161,7 +161,7 @@ class SortirController extends AbstractController
         $this->entityManager->flush();
 
         $this->addFlash('success', 'Vous êtes désinscrit de la sortie avec succès.');
-        return $this->redirectToRoute('app_sortie_show');
+        return $this->redirectToRoute('app_all_sorties');
     }
 
     #[Route('/sortie/cancel/{id}', name: 'app_sortir_cancel', methods: ['GET', 'POST'])]
@@ -215,19 +215,35 @@ class SortirController extends AbstractController
 
         if (!$sortie) {
             $this->addFlash('error', 'La sortie demandée n\'existe pas.');
-            return $this->redirectToRoute('app_sortie_show');
+            return $this->redirectToRoute('app_all_sorties');
         }
 
         if ($this->getUser() !== $sortie->getOrganisateur()) {
             $this->addFlash('error', 'Vous n\'êtes pas autorisé à supprimer cette sortie.');
-            return $this->redirectToRoute('app_sortie_show');
+            return $this->redirectToRoute('app_all_sorties');
         }
 
         $this->entityManager->remove($sortie);
         $this->entityManager->flush();
 
         $this->addFlash('success', 'La sortie a été supprimée avec succès.');
-        return $this->redirectToRoute('app_sortie_show');
+        return $this->redirectToRoute('app_all_sorties');
+    }
+
+    //route pour afficher les détails d'une sortie
+    #[Route('/sortie/{id}', name: 'app_sortir_show')]
+    public function show(int $id): Response
+    {
+        $sortie = $this->sortieRepository->find($id);
+        //dd($sortie);
+        if (!$sortie) {
+            $this->addFlash('error', 'La sortie demandée n\'existe pas.');
+            return $this->redirectToRoute('app_all_sorties');
+        }
+
+        return $this->render('sortir/show.html.twig', [
+            'sortie' => $sortie,
+        ]);
     }
 
 }
