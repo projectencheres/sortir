@@ -1,6 +1,8 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Liste des Sorties{% endblock %}
+{% block title %}
+    Liste des Sorties
+{% endblock %}
 
 {% block stylesheets %}
     {{ parent() }}
@@ -52,12 +54,50 @@
                                 <a href="#" class="btn btn-warning btn-sm mb-2">Modifier</a>
                                 <a href="{{ path('app_sortir_delete', {id: sortie.id}) }}" class="btn btn-danger btn-sm mb-2">Supprimer</a>
                                 {% if sortie.etat != 'Annulée' %}
-                                    {# <button class="btn btn-danger btn-sm mb-2" data-bs-toggle="modal" data-bs-target="#cancelModal" data-id="{{ sortie.id }}">
-                                        Annuler
-                                    </button> #}
-                                    <button class="btn btn-danger mb-2" data-bs-toggle="modal" data-bs-target="#cancelModal" data-id="{{ sortie.id }}">
+                                    <button class="btn btn-danger btn-sm" 
+                                            data-bs-toggle="modal" 
+                                            data-bs-target="#cancelModal-{{ sortie.id }}"
+                                            data-id="{{ sortie.id }}">
                                         Annuler
                                     </button>
+
+                                    <!-- Button trigger modal -->
+                                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+                                    Launch static backdrop modal
+                                    </button>
+
+                                    <!-- Modal -->
+                                    <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h1 class="modal-title fs-5" id="staticBackdropLabel">Modal title</h1>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            ...
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                            <button type="button" class="btn btn-primary">Understood</button>
+                                        </div>
+                                        </div>
+                                    </div>
+                                    </div>
+                                    <!-- Modal -->
+                                    {# <div class="modal fade" id="cancelModal-{{ sortie.id }}" tabindex="-1" aria-labelledby="cancelModalLabel-{{ sortie.id }}" aria-hidden="true">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content" id="cancel-modal-content-{{ sortie.id }}">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="cancelModalLabel-{{ sortie.id }}">Annuler la sortie</h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <p>Chargement...</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div> #}
                                 {% endif %}
                             {% endif %}
                         </div>
@@ -73,4 +113,50 @@
         {% endfor %}
     </div>
 </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    {# <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('[data-bs-toggle="modal"]').forEach(button => {
+                button.addEventListener('click', (event) => {
+                    const sortieId = button.getAttribute('data-id');
+                    const modalContent = document.getElementById(`cancel-modal-content-${sortieId}`);
+
+                    // Charger le contenu du formulaire via AJAX
+                    fetch(`/sortie/cancel/${sortieId}`)
+                        .then(response => response.text())
+                        .then(html => {
+                            modalContent.innerHTML = html;
+
+                            // Gestion du formulaire dans le modal
+                            const form = modalContent.querySelector('#cancel-form');
+                            if (form) {
+                                form.addEventListener('submit', (e) => {
+                                    e.preventDefault();
+                                    const formData = new FormData(form);
+
+                                    fetch(form.action, {
+                                        method: 'POST',
+                                        body: formData,
+                                    })
+                                        .then(response => response.json())
+                                        .then(data => {
+                                            if (data.success) {
+                                                alert(data.success);
+                                                window.location.reload();
+                                            } else if (data.error) {
+                                                alert(data.error);
+                                            }
+                                        })
+                                        .catch(error => console.error('Erreur :', error));
+                                });
+                            }
+                        })
+                        .catch(error => console.error('Erreur de chargement du formulaire :', error));
+                });
+            });
+        });
+    </script> #}
 {% endblock %}

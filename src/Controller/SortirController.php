@@ -168,6 +168,8 @@ class SortirController extends AbstractController
     public function cancel(Request $request, int $id): Response
     {
         $sortie = $this->sortieRepository->find($id);
+        //recuperer les participants de la sortie
+        $participants = $sortie->getParticipants();
 
         if (!$sortie) {
             return $this->json(['error' => 'Sortie introuvable.'], Response::HTTP_NOT_FOUND);
@@ -189,6 +191,10 @@ class SortirController extends AbstractController
             ->getForm();
 
         $form->handleRequest($request);
+        // supprimer les participants de la sortie
+        foreach ($participants as $participant) {
+            $sortie->removeParticipant($participant);
+        }
 
         if ($form->isSubmitted() && $form->isValid()) {
             $data = $form->getData();

@@ -25,49 +25,12 @@
             </div>
         {{ form_end(form) }}
     </div>
-    <h2>
-        Créer un nouveau lieu
-    </h2>
-    <div id="lieu_form_section" style="display:none;">
-        {{ form_start(lieuForm) }}
-        {{ form_row(lieuForm.nom) }}
-        {{ form_row(lieuForm.rue) }}
-        {{ form_row(lieuForm.ville) }}
-        {{ form_row(lieuForm.codePostal) }}
-        {{ form_row(lieuForm.latitude) }}
-        {{ form_row(lieuForm.longitude) }}
-        <button class="btn btn-primary">
-            Ajouter un lieu
-        </button>
-        {{ form_end(lieuForm) }}
-    </div>
+    
+    
 {% endblock %}
 
 {% block javascripts %}
     {{ parent() }}
-    <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            // Cacher ou afficher le formulaire de lieu en fonction de la sélection
-            var lieuSelect = document.getElementById('lieu_select');
-            var lieuFormSection = document.getElementById('lieu_form_section');
-            
-            // Initialiser l'état du formulaire en fonction de la sélection actuelle
-            toggleLieuForm();
-
-            // Écouter les changements dans la sélection du lieu
-            lieuSelect.addEventListener('change', function() {
-                toggleLieuForm();
-            });
-
-            // Fonction pour cacher ou afficher le formulaire
-            function toggleLieuForm() {
-                if (lieuSelect.value === "") {
-                    lieuFormSection.style.display = 'none'; // Masquer le formulaire de lieu
-                } else {
-                    lieuFormSection.style.display = 'block'; // Afficher le formulaire de lieu
-                }
-            }
-        });
-    </script>
+    
 {% endblock %}
 

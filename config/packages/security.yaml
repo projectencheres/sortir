@@ -1,6 +1,11 @@
 security:
+  role_hierarchy:
+    ROLE_USER: ROLE_USER
+    ROLE_ADMIN: [ROLE_USER]
+    
   password_hashers:
     App\Entity\Participant: "auto"
+
 
   providers:
     app_user_provider:
