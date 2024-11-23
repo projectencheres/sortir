@@ -1,0 +1,74 @@
+{% extends 'base.html.twig' %}
+{% block title %}
+    Détails de la sortie
+{% endblock %}
+{% block body %}
+    <div class="container mt-4">
+        <h1 class="mb-4">Afficher une sortie</h1>
+        
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h4 class="mb-0">Organisateur : 
+                {% if sortie.organisateur %}
+                    {{ sortie.organisateur.nom }} {{ sortie.organisateur.prenom }}
+                {% else %}
+                    Inconnu
+                {% endif %}
+            </h4>
+            <a href="{{ path('app_all_sorties') }}" class="btn btn-secondary">Retour à la liste</a>
+        </div>
+
+        <div class="row">
+            <div class="col-md-9">
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h5 class="card-title">Détails de la sortie</h5>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <p><strong>Nom de la sortie :</strong> {{ sortie.nom }}</p>
+                                <p><strong>Date et heure de la sortie :</strong> {{ sortie.dateHeureDebut|date('d/m/Y H:i') }}</p>
+                                <p><strong>Date limite d'inscription :</strong> {{ sortie.dateLimiteInscription|date('d/m/Y') }}</p>
+                                <p><strong>Nombre de places :</strong> {{ sortie.nbInscriptionsMax }}</p>
+                                <p><strong>Durée :</strong> {{ sortie.duree }} minutes</p>
+                                <p><strong>Description et infos :</strong> {{ sortie.infosSortie }}</p>
+                            </div>
+
+                            <div class="col-md-6">
+                                <p><strong>Ville organisatrice :</strong> {{ sortie.lieu.ville }}</p>
+                                <p><strong>Lieu :</strong> {{ sortie.lieu.nom }}</p>
+                                <p><strong>Rue :</strong> {{ sortie.lieu.rue }}</p>
+                                <p><strong>Code postal :</strong> {{ sortie.lieu.codePostal }}</p>
+                                <p><strong>Latitude :</strong> {{ sortie.lieu.latitude }}</p>
+                                <p><strong>Longitude :</strong> {{ sortie.lieu.longitude }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-3">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Participants inscrits</h5>
+                        <table class="table table-bordered table-striped">
+                            <thead class="thead-light">
+                                <tr>
+                                    <th>Pseudo</th>
+                                    <th>Nom</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for participant in sortie.participants %}
+                                    <tr>
+                                        <td>{{ participant.pseudo }}</td>
+                                        <td>{{ participant.nom }} {{ participant.prenom }}</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

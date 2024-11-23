@@ -1,0 +1,76 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Liste des Sorties{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('css/sortie.css') }}">
+{% endblock %}
+    
+{% block body %}
+<div class="container mt-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Liste des Sorties</h1>
+        <a href="{{ path('app_sortie_create') }}" class="btn btn-success btn-sm">Créer une sortie</a>
+    </div>
+    <div class="row">
+        {% for sortie in sorties %}
+            <div class="col-md-4">
+                <div class="card shadow-sm mb-4">
+                    <div class="card-body">
+                        <h5 class="card-title text-primary">{{ sortie.nom }}</h5>
+                        <p class="card-text">
+                            <strong>Date de début:</strong> {{ sortie.dateHeureDebut|date('d/m/Y H:i') }}<br>
+                            <strong>Lieu:</strong> {{ sortie.lieu.nom ?? 'Non défini' }}<br>
+                            <strong>État:</strong> <span class="badge bg-info">{{ sortie.etat }}</span><br>
+                            <strong>Participants:</strong> {{ sortie.participants|length }} / {{ sortie.nbInscriptionsMax }}
+                        </p>
+                        <div class="d-flex justify-content-between flex-wrap">
+                            {% if sortie.etat != 'Annulée' %}
+                                {% if sortie.participants|length < sortie.nbInscriptionsMax %}
+                                    {% if not sortie.participants.contains(app.user) %}
+                                        <a href="{{ path('app_sortir_subscribe', {id: sortie.id}) }}" class="btn btn-primary btn-sm mb-2">S'inscrire</a>
+                                    {% else %}
+                                        <a href="#" class="btn btn-secondary btn-sm mb-2 disabled">Déjà inscrit</a>
+                                    {% endif %}
+                                {% else %}
+                                    <a href="#" class="btn btn-secondary btn-sm mb-2 disabled">Complet</a>
+                                {% endif %}
+                            {% endif %}
+
+                            {% if sortie.etat == 'Annulée' %}
+                                <a href="#" class="btn btn-secondary btn-sm mb-2 disabled">Annulée</a>
+                            {% endif %}
+                            
+                            {% if sortie.participants.contains(app.user) and sortie.dateHeureDebut > "now"|date %}
+                                <a href="{{ path('app_sortir_unsubscribe', {id: sortie.id}) }}" class="btn btn-danger btn-sm mb-2">Désinscrire</a>
+                            {% endif %}
+
+                            <a href="{{ path('app_sortir_show', {id: sortie.id}) }}" class="btn btn-secondary btn-sm mb-2">Voir détails</a>
+
+                            {% if app.user == sortie.organisateur and sortie.dateHeureDebut > "now"|date %}
+                                <a href="#" class="btn btn-warning btn-sm mb-2">Modifier</a>
+                                <a href="{{ path('app_sortir_delete', {id: sortie.id}) }}" class="btn btn-danger btn-sm mb-2">Supprimer</a>
+                                {% if sortie.etat != 'Annulée' %}
+                                    {# <button class="btn btn-danger btn-sm mb-2" data-bs-toggle="modal" data-bs-target="#cancelModal" data-id="{{ sortie.id }}">
+                                        Annuler
+                                    </button> #}
+                                    <button class="btn btn-danger mb-2" data-bs-toggle="modal" data-bs-target="#cancelModal" data-id="{{ sortie.id }}">
+                                        Annuler
+                                    </button>
+                                {% endif %}
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% else %}
+            <div class="col-12">
+                <div class="alert alert-warning text-center">
+                    Aucune sortie n'est disponible pour le moment.
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

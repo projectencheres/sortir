@@ -1,0 +1,45 @@
+body {
+    padding-top: 90px;
+}
+
+/* Style général de la navbar */
+.custom-navbar {
+    border-bottom: 1px solid #ddd;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    z-index: 1030;
+}
+
+/* Lien actif */
+.navbar .nav-link.active {
+    font-weight: bold;
+    color: #0056b3 !important;
+}
+
+/* Dropdown menu */
+.navbar .dropdown-menu {
+    border-radius: 0.5rem;
+    border: none;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Boutons */
+.navbar .btn-outline-primary {
+    border-width: 2px;
+    border-radius: 50px;
+}
+
+.navbar .btn-primary {
+    border-radius: 50px;
+}
+
+.navbar .btn-danger {
+    border-radius: 50px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .navbar .btn {
+        width: 100%;
+        margin-bottom: 10px;
+    }
+}

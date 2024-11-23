@@ -1,38 +1,102 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Liste des Sorties{% endblock %}
-
 {% block body %}
 <div class="container mt-5">
-    <h1 class="mb-4">Liste des Sorties</h1>
-    <div class="row">
-        {% for sortie in sorties %}
-            <div class="col-md-4">
-                <div class="card mb-4">
-                    <div class="card-body">
-                        <h5 class="card-title">{{ sortie.nom }}</h5>
-                        <p class="card-text">
-                            <strong>Date de début:</strong> {{ sortie.dateHeureDebut|date('d/m/Y H:i') }}<br>
-                            <strong>Lieu:</strong> {{ sortie.lieu.nom ?? 'Non défini' }}<br>
-                            <strong>État:</strong> {{ sortie.etat }}<br>
-                            <strong>Nombre d'inscrits:</strong> {{ sortie.participants|length }} / {{ sortie.nbInscriptionsMax }}
-                        </p>
-                        <div class="d-flex justify-content-between flex-wrap">
-                            <a href="#" class="btn btn-primary mb-2">S'inscrire</a>
-                            <a href="#" class="btn btn-secondary mb-2">Voir détails</a>
-                            <a href="#" class="btn btn-warning mb-2">Modifier</a>
-                            <a href="#" class="btn btn-danger mb-2">Annuler</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        {% else %}
-            <div class="col-12">
-                <div class="alert alert-warning">
-                    Aucune sortie n'est disponible pour le moment.
-                </div>
-            </div>
-        {% endfor %}
+    <h1 class="mb-4">Liste des sorties</h1>
+
+    <!-- Filtres -->
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <label for="site" class="form-label">Site :</label>
+            <select id="site" class="form-select">
+                <option selected>SAINT HERBLAIN</option>
+                <option>NANTES</option>
+                <!-- Ajouter d'autres sites si nécessaire -->
+            </select>
+        </div>
+        <div class="col-md-5">
+            <label for="search" class="form-label">Le nom de la sortie contient :</label>
+            <input id="search" type="text" class="form-control" placeholder="Rechercher une sortie">
+        </div>
+        <div class="col-md-4 d-flex align-items-end">
+            <button class="btn btn-primary w-100">Rechercher</button>
+        </div>
     </div>
+
+    <!-- Tableau des sorties -->
+    <table class="table table-hover table-bordered align-middle">
+        <thead class="table-light">
+            <tr>
+                <th>Nom de la sortie</th>
+                <th>Date de la sortie</th>
+                <th>Clôture</th>
+                <th>Inscrits/Places</th>
+                <th>État</th>
+                <th>Inscrit</th>
+                <th>Organisateur</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for sortie in sorties %}
+                <tr>
+                    <td>{{ sortie.nom }}</td>
+                    <td>{{ sortie.dateHeureDebut|date('d/m/Y H:i') }}</td>
+                    <td>{{ sortie.dateLimiteInscription|date('d/m/Y') }}</td>
+                    <td>{{ sortie.participants|length }}/{{ sortie.nbInscriptionsMax }}</td>
+                    <td>
+                        <span class="badge 
+                            {% if sortie.etat == 'Créée' %} bg-success 
+                            {% elseif sortie.etat == 'Annulée' %} bg-danger 
+                            {% elseif sortie.etat == 'En cours' %} bg-info 
+                            {% else %} bg-secondary 
+                            {% endif %}">
+                            {{ sortie.etat }}
+                        </span>
+                    </td>
+                    <td>
+                        <strong>{{ sortie.participants|length }} / {{ sortie.nbInscriptionsMax }}</strong>
+                        {# {% if sortie.participants.contains(app.user) %}
+                            <span class="badge bg-primary">Oui</span>
+                        {% else %}
+                            <span class="badge bg-secondary">Non</span>
+                        {% endif %} #}
+                    </td>
+                    <td>{{ sortie.organisateur }}</td>
+                    <td>
+                        <div class="d-flex gap-2 justify-content-center">
+                            <!-- Bouton Afficher -->
+                            <a href="#" class="btn btn-secondary btn-sm">Afficher</a>
+
+                            <!-- Boutons Inscription/Désinscription -->
+                            {% if sortie.participants.contains(app.user) and app.user != sortie.organisateur %}
+                                <a href="#" class="btn btn-danger btn-sm">Se désister</a>
+                            {% elseif not sortie.participants.contains(app.user) and sortie.etat == 'Ouvert' %}
+                                <a href="#" class="btn btn-success btn-sm">S'inscrire</a>
+                            {% endif %}
+
+                            <!-- Bouton Modifier (organisateur seulement) -->
+                            {% if app.user == sortie.organisateur and sortie.etat != 'Annulée' %}
+                                {% if sortie.etat == 'En création' %}
+                                    <a href="#" class="btn btn-primary btn-sm">Publier</a>
+                                {% else %}
+                                    <a href="#" class="btn btn-warning btn-sm">Modifier</a>
+                                {% endif %}
+                            {% endif %}
+
+                            <!-- Bouton Annuler -->
+                            {% if app.user == sortie.organisateur and sortie.dateHeureDebut > "now"|date and sortie.etat != 'Annulée' %}
+                                <a href="#" class="btn btn-danger btn-sm">Annuler</a>
+                            {% endif %}
+                        </div>
+                    </td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="8" class="text-center">Aucune sortie trouvée.</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 </div>
 {% endblock %}
