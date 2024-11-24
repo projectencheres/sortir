@@ -10,6 +10,11 @@ final class FileUploader
 {
     private string $targetDirectory;
 
+    /*
+     * fixes: when an image is replaced, the previous one should be deleted in the storage folder as well
+     *  reconsider the vich/uploader-bundle
+     * */
+
     public function __construct(ParameterBagInterface $parameterBag)
     {
         $this->targetDirectory = $parameterBag->get('photos_directory');
