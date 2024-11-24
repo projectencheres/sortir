@@ -47,8 +47,14 @@ class Participant implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 255)]
     private ?string $prenom = null;
 
-    #[ORM\Column(length: 20)]
-    #[Assert\Regex(pattern: "/^\+?[0-9]{1,4}[-. ]?\(?\d{1,3}\)?[-. ]?\d{1,3}[-. ]?\d{1,4}$/", message: "Le numéro de téléphone est invalide.")]    private ?string $telephone = null;
+    #[ORM\Column]
+    #[Assert\Regex(pattern: "/^\+?[0-9]{1,4}[-. ]?\(?\d{1,3}\)?[-. ]?\d{1,3}[-. ]?\d{1,4}$/", message: "Le numéro de téléphone est invalide.")]
+    #[Assert\Length(
+        min: 10, max: 20,
+        minMessage: "Le numéro de téléphone doit comporter au moins {{ limit }} caractères.",
+        maxMessage: "Le numéro de téléphone ne peut pas dépasser {{ limit }} caractères."
+    )]
+    private ?string $telephone = null;
 
     #[ORM\Column(length: 255)]
     private ?string $email = null;
@@ -206,7 +212,7 @@ class Participant implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->telephone;
     }
 
-    public function setTelephone(int $telephone): static
+    public function setTelephone(string $telephone): static
     {
         $this->telephone = $telephone;
 
