@@ -1,0 +1,87 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Liste des Sites{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .btn-create-site {
+            float: right;
+            margin-bottom: 20px;
+        }
+        .table-container {
+            margin-top: 30px;
+            display: flex;
+            justify-content: center;
+        }
+        .table {
+            width: 70%;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #fff;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        .table th {
+            background-color: #343a40;
+            color: white;
+            text-align: center;
+            font-weight: bold;
+            padding: 10px;
+        }
+        .table td {
+            text-align: center;
+            vertical-align: middle;
+            padding: 10px;
+        }
+        .table tbody tr:nth-child(odd) {
+            background-color: #f8f9fa;
+        }
+        .table tbody tr:hover {
+            background-color: #e9ecef;
+        }
+        .action-buttons a {
+            margin: 0 3px;
+        }
+        .action-buttons a.btn {
+            padding: 5px 10px;
+            font-size: 0.85rem;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+<div class="container mt-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Liste des Sites</h1>
+        <a href="{{ path('app_admin_add_site') }}" class="btn btn-primary btn-create-site">Créer un site</a>
+    </div>
+    <div class="table-container">
+        <table class="table table-bordered table-hover">
+            <thead>
+                <tr>
+                    <th>Nom du Site</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for site in sites %}
+                    <tr>
+                        <td>{{ site.nom }}</td>
+                        <td class="action-buttons">
+                            <a href="#" class="btn btn-info btn-sm">Voir</a>
+                            <a href="#" class="btn btn-warning btn-sm">Modifier</a>
+                            <a href="#" class="btn btn-danger btn-sm"
+                               onclick="return confirm('Êtes-vous sûr de vouloir supprimer ce site ?')">Supprimer</a>
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="2" class="text-center">Aucun site disponible.</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

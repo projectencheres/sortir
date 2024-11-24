@@ -40,6 +40,9 @@ class Lieu
     #[ORM\Column(nullable: true)]
     private ?int $codePostal = null;
 
+    #[ORM\ManyToOne(inversedBy: 'site')]
+    private ?Site $site = null;
+
     public function __construct()
     {
         $this->sortie = new ArrayCollection();
@@ -148,6 +151,18 @@ class Lieu
     public function setCodePostal(?int $codePostal): static
     {
         $this->codePostal = $codePostal;
+
+        return $this;
+    }
+
+    public function getSite(): ?Site
+    {
+        return $this->site;
+    }
+
+    public function setSite(?Site $site): static
+    {
+        $this->site = $site;
 
         return $this;
     }

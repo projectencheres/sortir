@@ -36,11 +36,18 @@ class Site
     #[ORM\Column(nullable: true)]
     private ?\DateTimeImmutable $modifiedAt = null;
 
+    /**
+     * @var Collection<int, Lieu>
+     */
+    #[ORM\OneToMany(targetEntity: Lieu::class, mappedBy: 'site')]
+    private Collection $site;
+
     public function __construct()
     {
         $this->sortie = new ArrayCollection();
         $this->participant = new ArrayCollection();
         $this->createdAt = new \DateTimeImmutable();
+        $this->site = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -141,6 +148,36 @@ class Site
     public function setModifiedAt(?\DateTimeImmutable $modifiedAt): static
     {
         $this->modifiedAt = $modifiedAt;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Lieu>
+     */
+    public function getSite(): Collection
+    {
+        return $this->site;
+    }
+
+    public function addSite(Lieu $site): static
+    {
+        if (!$this->site->contains($site)) {
+            $this->site->add($site);
+            $site->setSite($this);
+        }
+
+        return $this;
+    }
+
+    public function removeSite(Lieu $site): static
+    {
+        if ($this->site->removeElement($site)) {
+            // set the owning side to null (unless already changed)
+            if ($site->getSite() === $this) {
+                $site->setSite(null);
+            }
+        }
 
         return $this;
     }
