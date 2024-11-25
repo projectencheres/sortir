@@ -6,6 +6,8 @@ use App\Entity\Lieu;
 use App\Entity\Sortie;
 use App\Form\LieuType;
 use App\Form\SortieType;
+use App\Form\SortieSeachType;
+use App\Form\SortieCancelType;
 use App\Form\SortieCreateType;
 use App\Repository\LieuRepository;
 use App\Repository\SortieRepository;
@@ -38,27 +40,23 @@ class SortirController extends AbstractController
             $sortie = new Sortie();
             $form = $this->createForm(SortieCreateType::class, $sortie);
             $form->handleRequest($request);
-
-            $lieuForm = $this->createForm(LieuType::class, new Lieu());
-            $lieuForm->handleRequest($request);
             $participant = $this->participantRepository->find($this->getUser()->getId());
+            $site = $participant->getSite();
+
+            $form = $this->createForm(SortieCreateType::class, $sortie, [
+                 'site' => $site,
+            ]);
+            $form->handleRequest($request);
 
             if ($form->isSubmitted() && $form->isValid()) {
                 // Vérifier si l'utilisateur a sélectionné un lieu existant
-                $lieuId = $form->get('lieu')->getData();
-                if ($lieuId) {
-                    $lieu = $lieuRepository->find($lieuId);
+                $lieu = $form->get('lieuCreation')->getData();
+                if($lieu instanceof Lieu){
+                    $entityManager->persist($lieu);
                     $sortie->setLieu($lieu);
-                } elseif ($lieuForm->isSubmitted() && $lieuForm->isValid()) {
-                    // Si aucun lieu n'est sélectionné, prendre le nouveau lieu du formulaire
-                    $nouveauLieu = $lieuForm->getData();
-                    $entityManager->persist($nouveauLieu);
-                    $sortie->setLieu($nouveauLieu);
-                } else {
-                    $this->addFlash('error', 'Veuillez sélectionner ou créer un lieu.');
-                    return $this->redirectToRoute('app_sortie_create');
                 }
-                
+
+                $sortie->setSite($site);
                 $sortie->setEtat('Créée');
                 $sortie->addParticipant($participant);
                 $sortie->setOrganisateur($this->getUser()); // Associer l'organisateur
@@ -67,20 +65,31 @@ class SortirController extends AbstractController
 
                 $this->addFlash('success', 'La sortie a été créée avec succès.');
                 return $this->redirectToRoute('app_all_sorties');
+                //dd($form);
             }
 
             return $this->render('sortir/create.html.twig', [
                 'form' => $form->createView(),
-                'lieuForm' => $lieuForm->createView(),
             ]);
     }
 
     #[Route('/sorties/list', name: 'app_all_sorties')]
-    public function index(): Response
+    public function index(Request $request): Response
     {   
-        $sorties = $this->sortieRepository->findAll();
+        $form = $this->createForm(SortieSeachType::class);
+        $form->handleRequest($request);
+
+        $critere = $form->getData();
+        $participant = $this->participantRepository->find($this->getUser()->getId());
+
+        $sorties = $form->isSubmitted() && $form->isValid()
+            ? $this->sortieRepository->findByFiltres($critere, $participant)
+            : $this->sortieRepository->findAll();
+
+            // $sorties = $this->sortieRepository->findAll();
         return $this->render('sortir/all_sorties.html.twig', [
             'sorties' => $sorties,
+            'form' => $form->createView(),
         ]);
     }
 
@@ -101,13 +110,13 @@ class SortirController extends AbstractController
             $this->addFlash('error', 'Utilisateur non trouvé.');
             return $this->redirectToRoute('app_all_sorties');
         }
-
+        $now = new \DateTimeImmutable('now', new \DateTimeZone('Europe/Paris'));
         if ($sortie->getParticipants()->contains($participant)) {
             $this->addFlash('warning', 'Vous êtes déjà inscrit à cette sortie.');
             return $this->redirectToRoute('app_all_sorties');
         }
 
-        if ($sortie->getDateLimiteInscription() < new \DateTimeImmutable()) {
+        if ($sortie->getDateLimiteInscription() < $now) {
             $this->addFlash('error', 'La date limite d\'inscription à cette sortie est dépassée.');
             return $this->redirectToRoute('app_all_sorties');
         }
@@ -176,38 +185,32 @@ class SortirController extends AbstractController
         }
 
         if ($sortie->getDateHeureDebut() <= new \DateTimeImmutable()) {
-            return $this->json(['error' => 'Vous ne pouvez pas annuler une sortie qui a déjà commencé.'], Response::HTTP_BAD_REQUEST);
+            return $this->addFlash('error', 'La sortie a déjà commencé.');
         }
 
         if ($this->getUser() !== $sortie->getOrganisateur()) {
-            return $this->json(['error' => 'Seul l\'organisateur peut annuler cette sortie.'], Response::HTTP_FORBIDDEN);
+            return $this->addFlash('error', 'Vous n\'êtes pas autorisé à annuler cette sortie.');
         }
-
-        $form = $this->createFormBuilder()
-            ->add('motif', TextareaType::class, [
-                'label' => 'Motif d\'annulation',
-                'required' => true,
-            ])
-            ->getForm();
-
+        
+        $form = $this->createForm(SortieCancelType:: class, $sortie);
         $form->handleRequest($request);
+        
         // supprimer les participants de la sortie
         foreach ($participants as $participant) {
             $sortie->removeParticipant($participant);
         }
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $data = $form->getData();
             $sortie->setEtat('Annulée');
-            $sortie->setMotifAnnulation($data['motif']);
-
+            
             $this->entityManager->persist($sortie);
             $this->entityManager->flush();
 
-            return $this->json(['success' => 'La sortie a été annulée avec succès.']);
+            $this->addFlash('success', 'La sortie a été annulée avec succès.');
+            return $this->redirectToRoute('app_all_sorties');
         }
 
-        return $this->render('sortir/_cancel_form.html.twig', [
+        return $this->render('sortir/cancel_form.html.twig', [
             'sortie' => $sortie,
             'form' => $form->createView(),
         ]);

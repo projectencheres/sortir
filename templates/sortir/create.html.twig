@@ -1,36 +1,109 @@
 {% extends 'base.html.twig' %}
+
+{% block title %}Créer une Sortie{% endblock %}
+
 {% block body %}
-    <h1>
-        Créer une nouvelle sortie
-    </h1>
-    <div class="container my-5">
-        {{ form_start(form) }}
-        <div class="row">
-            <!-- Colonne gauche -->
-            <div class="col-md-6">
-                {{ form_row(form.nom) }}
-                {{ form_row(form.dateHeureDebut) }}
-                {{ form_row(form.duree) }}
-                {{ form_row(form.dateLimiteInscription) }}
-                {{ form_row(form.nbInscriptionsMax) }}
-            </div>
-            <div class="col-md-6">
-                {{ form_row(form.infosSortie) }}
-                {{ form_row(form.site) }}
-                {{ form_row(form.lieu, {'attr': {'id': 'lieu_select'}}) }}
-                {# {{ form_row(form.lieu) }} #}
-                <button class="btn btn-success">
-                    Créer la sortie
-                </button>
-            </div>
-        {{ form_end(form) }}
-    </div>
-    
-    
-{% endblock %}
+    <h1>Créer une nouvelle Sortie</h1>
 
-{% block javascripts %}
-    {{ parent() }}
-    
-{% endblock %}
+    {{ form_start(form) }}
+        <div class="form-group">
+            {{ form_row(form.nom) }}
+        </div>
+        <div class="form-group">
+            {{ form_row(form.dateHeureDebut) }}
+        </div>
+        <div class="form-group">
+            {{ form_row(form.duree) }}
+        </div>
+        <div class="form-group">
+            {{ form_row(form.dateLimiteInscription) }}
+        </div>
+        <div class="form-group">
+            {{ form_row(form.nbInscriptionsMax) }}
+        </div>
+        <div class="form-group">
+            {{ form_row(form.infosSortie) }}
+        </div>
+        <div class="form-group">
+            {{ form_row(form.site) }}
+        </div>
 
+        <h2>Lieu</h2>
+        <div class="form-group">
+            <label>
+                <input type="radio" name="lieu_choice" value="existing" checked onclick="toggleLieuForm('existing')">
+                Choisir un lieu existant
+            </label>
+            <label>
+                <input type="radio" name="lieu_choice" value="new" onclick="toggleLieuForm('new')">
+                Créer un nouveau lieu
+            </label>
+        </div>
+
+        <div id="lieu-existing" class="form-group">
+            {{ form_row(form.lieu) }}
+            <div id="lieu-info" style="display: none;">
+                <h3>Informations sur le lieu sélectionné</h3>
+                <p id="lieu-nom">Nom : </p>
+                <p id="lieu-rue">Rue : </p>
+                <p id="lieu-coordonnees">Coordonnées : </p>
+                <p id="lieu-ville">Ville : </p>
+            </div>
+        </div>
+
+        <div id="lieu-new" class="form-group" style="display: none;">
+            <h3>Créer un nouveau lieu</h3>
+            {{ form_row(form.lieuCreation.nom) }}
+            {{ form_row(form.lieuCreation.rue) }}
+            {{ form_row(form.lieuCreation.latitude) }}
+            {{ form_row(form.lieuCreation.longitude) }}
+            {{ form_row(form.lieuCreation.ville) }}
+            {{ form_row(form.lieuCreation.codePostal) }}
+        </div>
+
+        <button class="btn btn-primary">Créer</button>
+    {{ form_end(form) }}
+
+    <script>
+        function toggleLieuForm(choice) {
+            const existing = document.getElementById('lieu-existing');
+            const newLieu = document.getElementById('lieu-new');
+            const lieuInfo = document.getElementById('lieu-info');
+
+            if (choice === 'existing') {
+                existing.style.display = 'block';
+                newLieu.style.display = 'none';
+                lieuInfo.style.display = 'block';
+            } else {
+                existing.style.display = 'none';
+                newLieu.style.display = 'block';
+                lieuInfo.style.display = 'none';
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const lieuSelect = document.querySelector('[name="form[lieu]"]'); // Assurez-vous que le chemin correspond au nom exact du champ dans votre formulaire
+            const lieuInfo = document.getElementById('lieu-info');
+
+            lieuSelect.addEventListener('change', (event) => {
+                const selectedOption = event.target.selectedOptions[0]; // L'option sélectionnée
+                if (selectedOption) {
+                    const nom = selectedOption.dataset.nom || 'Non spécifié';
+                    const rue = selectedOption.dataset.rue || 'Non spécifiée';
+                    const latitude = selectedOption.dataset.latitude || 'Non spécifiée';
+                    const longitude = selectedOption.dataset.longitude || 'Non spécifiée';
+                    const ville = selectedOption.dataset.ville || 'Non spécifiée';
+
+                    document.getElementById('lieu-nom').textContent = `Nom : ${nom}`;
+                    document.getElementById('lieu-rue').textContent = `Rue : ${rue}`;
+                    document.getElementById('lieu-coordonnees').textContent = `Coordonnées : ${latitude}, ${longitude}`;
+                    document.getElementById('lieu-ville').textContent = `Ville : ${ville}`;
+
+                    lieuInfo.style.display = 'block';
+                } else {
+                    lieuInfo.style.display = 'none';
+                }
+            });
+        });
+    </script>
+{% endblock %}

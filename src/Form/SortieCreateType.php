@@ -45,7 +45,8 @@ class SortieCreateType extends AbstractType
                 'class' => Site::class,
                 'choice_label' => 'nom',
                 'label' => 'Site',
-                'placeholder' => 'Choisir un site',
+                'data' => $options['site'],
+                'disabled' => true,
             ])
             ->add('lieu', EntityType::class, [
                 'class' => Lieu::class,
@@ -53,6 +54,28 @@ class SortieCreateType extends AbstractType
                 'choice_label' => 'nom',
                 'placeholder' => 'Choisir un lieu',
                 'required' => false,
+                'attr' => [
+                            'data-nom' => 'nom',
+                            'data-rue' => 'rue',
+                            'data-latitude' => 'latitude',
+                            'data-longitude' => 'longitude',
+                            'data-ville' => 'ville',
+                        ],
+                // 'choice_attr' => function(Lieu $lieu){
+                //     return[
+                //         'data-lieu-nom' => $lieu->getNom(),
+                //         'data-lieu-rue' => $lieu->getRue(),
+                //         'data-lieu-ville' => $lieu->getVille(),
+                //         'data-lieu-code-postal' => $lieu->getCodePostal(),
+                //         'data-lieu-latitude' => $lieu->getLatitude(),
+                //         'data-lieu-longitude' => $lieu->getLongitude(),
+                //     ];
+                // },
+            ])
+            ->add('lieuCreation', LieuType::class, [
+                'label' => 'Créer un nouveau lieu',
+                'required' => false, 
+                'mapped' => false, 
             ]);
     }
 
@@ -60,6 +83,7 @@ class SortieCreateType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => Sortie::class,
+            'site' => null,
         ]);
     }
 }
