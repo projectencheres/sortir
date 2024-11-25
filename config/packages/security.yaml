@@ -1,6 +1,11 @@
 security:
+  role_hierarchy:
+    ROLE_USER: ROLE_USER
+    ROLE_ADMIN: [ROLE_USER]
+    
   password_hashers:
     App\Entity\Participant: "auto"
+
 
   providers:
     app_user_provider:
@@ -35,10 +40,13 @@ security:
           session: ~
 
   access_control:
-    - { path: ^/login, roles: PUBLIC_ACCESS }
-    - { path: ^/register, roles: PUBLIC_ACCESS }
+    - { path: ^/(login|register), roles: PUBLIC_ACCESS }
+    - { path: ^/(participant|sortie|sorties), roles: ROLE_USER }
+    # - { path: ^/register, roles: PUBLIC_ACCESS }
     - { path: ^/, roles: IS_AUTHENTICATED_FULLY }
-    - { path: ^/participant, roles: ROLE_USER }
+    - { path: ^/admin, roles: ROLE_ADMIN }
+
+
 
 when@test:
   security:
