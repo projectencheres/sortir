@@ -2,11 +2,12 @@
 
 namespace App\Entity;
 
-use App\Repository\SortieRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use App\Repository\SortieRepository;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: SortieRepository::class)]
 class Sortie
@@ -20,12 +21,16 @@ class Sortie
     private ?string $nom = null;
 
     #[ORM\Column]
+    #[Assert\NotBlank (message: 'La date de début est obligatoire')]
+    #[Assert\GreaterThan(propertyPath: 'dateLimiteInscription', message: 'La date de début doit être supérieure à la date de limite d\'inscription')]
     private ?\DateTimeImmutable $dateHeureDebut = null;
 
     #[ORM\Column]
     private ?int $duree = null;
 
     #[ORM\Column]
+    #[Assert\NotBlank (message: 'La date limite d\'inscription est obligatoire')]
+    #[Assert\GreaterThan('today', message: 'La date limite d\'inscription doit être supérieure à la date du jour')]
     private ?\DateTimeImmutable $dateLimiteInscription = null;
 
     #[ORM\Column]
