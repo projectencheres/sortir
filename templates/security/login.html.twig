@@ -26,10 +26,18 @@
                             <input type="password" id="password" name="_password" class="form-control" required placeholder="Entrez votre mot de passe">
                         </div>
 
+                        <div class="mb-3">
+                            <label><input type="checkbox" name="_remember_me"> Se souvenir de moi</label>
+                        </div>
+
                         <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
                         
                         <button type="submit" class="btn btn-primary w-100">Se connecter</button>
                     </form>
+                    <div class="mb-3">
+                        <a href="{{ path("app_forgot_password_request") }}" title="reset password">Mot de passe oublie ?</a>
+                    </div>
+
                     {% if error %}
                         <div class="alert alert-danger mt-3" role="alert">
                             {{ error.messageKey|trans(error.messageData, 'security') }}
