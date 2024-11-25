@@ -6,6 +6,7 @@ use App\Entity\Lieu;
 use App\Entity\Sortie;
 use App\Form\LieuType;
 use App\Form\SortieType;
+use App\Form\SortieSeachType;
 use App\Form\SortieCancelType;
 use App\Form\SortieCreateType;
 use App\Repository\LieuRepository;
@@ -73,11 +74,22 @@ class SortirController extends AbstractController
     }
 
     #[Route('/sorties/list', name: 'app_all_sorties')]
-    public function index(): Response
+    public function index(Request $request): Response
     {   
-        $sorties = $this->sortieRepository->findAll();
+        $form = $this->createForm(SortieSeachType::class);
+        $form->handleRequest($request);
+
+        $critere = $form->getData();
+        $participant = $this->participantRepository->find($this->getUser()->getId());
+
+        $sorties = $form->isSubmitted() && $form->isValid()
+            ? $this->sortieRepository->findByFiltres($critere, $participant)
+            : $this->sortieRepository->findAll();
+
+            // $sorties = $this->sortieRepository->findAll();
         return $this->render('sortir/all_sorties.html.twig', [
             'sorties' => $sorties,
+            'form' => $form->createView(),
         ]);
     }
 

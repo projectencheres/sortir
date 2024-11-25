@@ -15,6 +15,39 @@
         <h1>Liste des Sorties</h1>
         <a href="{{ path('app_sortie_create') }}" class="btn btn-success btn-sm">Créer une sortie</a>
     </div>
+
+     <!-- Formulaire de filtre -->
+    <div class="mb-4">
+        {{ form_start(form, {'attr': {'class': 'row g-3'}}) }}
+            <div class="col-md-3">
+                {{ form_row(form.site) }}
+            </div>
+            <div class="col-md-3">
+                {{ form_row(form.nom) }}
+            </div>
+            <div class="col-md-3">
+                {{ form_row(form.dateDebut) }}
+            </div>
+            <div class="col-md-3">
+                {{ form_row(form.dateFin) }}
+            </div>
+            <div class="col-md-3">
+                {{ form_row(form.organisateur) }}
+            </div>
+            <div class="col-md-3">
+                {{ form_row(form.inscrit) }}
+            </div>
+            <div class="col-md-3">
+                {{ form_row(form.nonInscrit) }}
+            </div>
+            <div class="col-md-3">
+                {{ form_row(form.passees) }}
+            </div>
+            {# <div class="col-md-12">
+                <button type="submit" class="btn btn-primary">Rechercher</button>
+            </div> #}
+        {{ form_end(form) }}
+    </div>
     <div class="row">
         {% for sortie in sorties %}
             <div class="col-md-4">
