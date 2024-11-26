@@ -66,7 +66,7 @@
                     <td>
                         <div class="d-flex gap-2 justify-content-center">
                             <!-- Bouton Afficher -->
-                            <a href="#" class="btn btn-secondary btn-sm">Afficher</a>
+                            <a href="{{ path('app_sortir_show', {'id': sortie.id}) }}" class="btn btn-primary btn-sm">Afficher</a>
 
                             <!-- Boutons Inscription/Désinscription -->
                             {% if sortie.participants.contains(app.user) and app.user != sortie.organisateur %}
@@ -85,8 +85,8 @@
                             {% endif %}
 
                             <!-- Bouton Annuler -->
-                            {% if app.user == sortie.organisateur and sortie.dateHeureDebut > "now"|date and sortie.etat != 'Annulée' %}
-                                <a href="#" class="btn btn-danger btn-sm">Annuler</a>
+                            {% if (app.user == sortie.organisateur or is_granted('ROLE_ADMIN')) and sortie.dateHeureDebut > "now"|date and sortie.etat != 'Annulée' %}
+                                <a href="{{ path('app_sortir_cancel', {'id': sortie.id}) }}" class="btn btn-danger btn-sm">Annuler</a>
                             {% endif %}
                         </div>
                     </td>

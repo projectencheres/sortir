@@ -173,7 +173,7 @@ class SortirController extends AbstractController
         return $this->redirectToRoute('app_all_sorties');
     }
 
-    #[Route('/sortie/cancel/{id}', name: 'app_sortir_cancel', methods: ['GET', 'POST'])]
+    #[Route('/sortie/cancel/{id}', name: 'app_sortir_cancel', requirements:['id'=>'\d+'], methods: ['GET', 'POST'])]
     public function cancel(Request $request, int $id): Response
     {
         $sortie = $this->sortieRepository->find($id);
@@ -188,7 +188,7 @@ class SortirController extends AbstractController
             return $this->addFlash('error', 'La sortie a déjà commencé.');
         }
 
-        if ($this->getUser() !== $sortie->getOrganisateur()) {
+        if (!($this->getUser() === $sortie->getOrganisateur() || $this->isGranted('ROLE_ADMIN')) ) {
             return $this->addFlash('error', 'Vous n\'êtes pas autorisé à annuler cette sortie.');
         }
         
@@ -244,7 +244,6 @@ class SortirController extends AbstractController
     public function show(int $id): Response
     {
         $sortie = $this->sortieRepository->find($id);
-        //dd($sortie);
         if (!$sortie) {
             $this->addFlash('error', 'La sortie demandée n\'existe pas.');
             return $this->redirectToRoute('app_all_sorties');
