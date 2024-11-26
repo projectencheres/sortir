@@ -38,68 +38,57 @@ body {
     background-color: #f9f9f9;
 }
 
-/* Style du modal d'annulation d'une sortie */
-
-/* Modal Annulation */
-/* .modal-header.bg-danger {
-    background-color: #dc3545;
-    border-bottom: 2px solid #b02a37;
-    color: #fff;
+/* Style du formulaire de filtre */
+.filter-form {
+    background-color: #f9f9f9;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
 }
 
-.modal-body {
-    background-color: #f8f9fa;
-    padding: 20px;
-    font-size: 0.95rem;
-    border-radius: 0 0 0.25rem 0.25rem;
+.filter-form h5 {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #007bff;
+    margin-bottom: 15px;
 }
 
-.modal-body .form-label {
-    color: #343a40;
-    font-size: 1rem;
+.filter-form .form-group {
+    display: flex;
+    flex-direction: column;
 }
 
-.modal-body .form-control {
-    border-radius: 5px;
+.filter-form .form-label {
+    font-size: 0.9rem;
+    font-weight: bold;
+    margin-bottom: 5px;
+    color: #555;
+}
+
+.filter-form .form-control {
     border: 1px solid #ced4da;
-    transition: border-color 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+    border-radius: 5px;
+    padding: 0.5rem;
+    font-size: 0.9rem;
+    color: #495057;
 }
 
-.modal-body .form-control:focus {
-    border-color: #dc3545;
-    box-shadow: 0 0 5px rgba(220, 53, 69, 0.5);
+.filter-form .form-check-input {
+    margin-left: 0;
+    margin-right: 10px;
 }
 
-.modal-content {
-    border-radius: 10px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+.filter-form .form-check-label {
+    font-size: 0.9rem;
+    color: #555;
 }
 
-.modal-header .btn-close {
-    filter: brightness(0) invert(1);
+.filter-form button {
+    font-size: 0.9rem;
+    padding: 0.5rem 1rem;
+    border-radius: 5px;
 }
 
-.modal-footer {
-    background-color: #f8f9fa;
-    border-top: 1px solid #dee2e6;
+.filter-form button:hover {
+    background-color: #0056b3;
+    border-color: #004085;
 }
-
-.btn-danger {
-    background-color: #dc3545;
-    border-color: #dc3545;
-    transition: background-color 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
-}
-
-.btn-danger:hover {
-    background-color: #b02a37;
-    box-shadow: 0 4px 10px rgba(220, 53, 69, 0.4);
-}
-
-.btn-secondary {
-    background-color: #6c757d;
-    border-color: #6c757d;
-}
-
-.btn-secondary:hover {
-    background-color: #5a6268;
-} */
