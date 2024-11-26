@@ -111,7 +111,7 @@
                             <a href="{{ path('app_sortir_show', {id: sortie.id}) }}" class="btn btn-secondary btn-sm mb-2">Voir détails</a>
 
                             {% if app.user == sortie.organisateur and sortie.dateHeureDebut > "now"|date %}
-                                <a href="#" class="btn btn-warning btn-sm mb-2">Modifier</a>
+                                <a href="{{ path('app_sortir_edit', {id: sortie.id}) }}" class="btn btn-warning btn-sm mb-2">Modifier</a>
                                 <a href="{{ path('app_sortir_delete', {id: sortie.id}) }}" class="btn btn-danger btn-sm mb-2">Supprimer</a>
                                 {% if sortie.etat != 'Annulée' %}
                                     <a href="{{ path('app_sortir_cancel', {id: sortie.id}) }}" class="btn btn-danger btn-sm mb-2">Annuler</a>

@@ -18,7 +18,8 @@ class SortieRepository extends ServiceEntityRepository
 
     public function findByFiltres($critere, $participant)
     {
-        $qb = $this->createQueryBuilder('s');
+        $qb = $this->createQueryBuilder('s')
+            ->orderBy('s.createdAt', 'DESC');
 
            if (!empty($critere['nom'])){
                 $qb->andWhere('s.nom LIKE :nom')
@@ -60,6 +61,14 @@ class SortieRepository extends ServiceEntityRepository
 
 
         return $qb->getQuery()->getResult();
+    }
+
+    public function findAllOrderByDate()
+    {
+        return $this->createQueryBuilder('s')
+            ->orderBy('s.createdAt', 'DESC')
+            ->getQuery()
+            ->getResult();
     }
     
     //    public function findOneBySomeField($value): ?Sortie
