@@ -244,7 +244,6 @@ class SortirController extends AbstractController
     public function show(int $id): Response
     {
         $sortie = $this->sortieRepository->find($id);
-        //dd($sortie);
         if (!$sortie) {
             $this->addFlash('error', 'La sortie demandée n\'existe pas.');
             return $this->redirectToRoute('app_all_sorties');
