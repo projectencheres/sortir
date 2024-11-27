@@ -34,7 +34,7 @@ class ParticipantController extends AbstractController
         $this->mailer = $mailer;
     }
 
-    #[Route('/participant', name: 'participant')]
+    #[Route('/create_massiv', name: 'participant')]
     public function index(Request $request): Response
     {
         // Créer le formulaire
