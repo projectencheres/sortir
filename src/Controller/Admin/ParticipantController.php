@@ -120,7 +120,7 @@ class ParticipantController extends AbstractController
                 $user->setPrenom($userData['prenom'] ?? null);
                 $user->setTelephone($userData['telephone'] ?? null);
                 $user->setRoles(['ROLE_USER']);
-                $user->setActif(true);
+                $user->setActif(false);
                 $user->setAdministrateur(false);
                 $user->setPassword($passwordEncoder->hashPassword($user, 'password'));
                 $entityManager->persist($user);
