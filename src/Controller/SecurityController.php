@@ -116,6 +116,8 @@ class SecurityController extends AbstractController
             );
 
             // Enregistrer l'utilisateur
+            $user->setRoles(['ROLE_USER']);
+            $user->setActif(true);
             $entityManager->persist($user);
             $entityManager->flush();
 

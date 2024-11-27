@@ -1,0 +1,95 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Liste des Participants{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .btn-create-site {
+            float: right;
+            margin-bottom: 20px;
+        }
+        .table-container {
+            margin-top: 30px;
+            display: flex;
+            justify-content: center;
+        }
+        .table {
+            width: 70%;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #fff;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        .table th {
+            background-color: #343a40;
+            color: white;
+            text-align: center;
+            font-weight: bold;
+            padding: 10px;
+        }
+        .table td {
+            text-align: center;
+            vertical-align: middle;
+            padding: 10px;
+        }
+        .table tbody tr:nth-child(odd) {
+            background-color: #f8f9fa;
+        }
+        .table tbody tr:hover {
+            background-color: #e9ecef;
+        }
+        .action-buttons a {
+            margin: 0 3px;
+        }
+        .action-buttons a.btn {
+            padding: 5px 10px;
+            font-size: 0.85rem;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+<div class="container mt-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Liste des Participants</h1>
+        <a href="#" class="btn btn-primary btn-create-site">Créer un·e utilisateur·rice</a>
+    </div>
+    <div class="table-container">
+        <table class="table table-bordered table-hover">
+            <thead>
+                <tr>
+                    <th>Pseudo</th>
+                    <th>Email</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for participant in participants %}
+                    <tr>
+                        <td>{{ participant.pseudo }}</td>
+                        <td>{{ participant.email }}</td>
+                        {% if is_granted('ROLE_ADMIN') %}
+                            <td class="action-buttons">
+                                <a href="{{ path('app_admin_participants_detail', {'id': participant.id}) }}" class="btn btn-info btn-sm">Voir</a>
+                                {% if participant.actif == 1 %}
+                                    <a href="{{ path('app_admin_participants_deactivate', {'id': participant.id}) }}" class="btn btn-warning btn-sm">Desactiver</a>
+                                {% else %}
+                                    <a href="{{ path('app_admin_participants_reactivate', {'id': participant.id}) }}" class="btn btn-secondary btn-sm">Activer</a>
+                                {% endif %}
+                                <a href="#" class="btn btn-danger btn-sm"
+                                   onclick="return confirm('Êtes-vous sûr de vouloir supprimer ce participant ?')">Supprimer</a>
+                            </td>
+                        {% endif %}
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="2" class="text-center">Aucun·e participant·e est disponible.</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

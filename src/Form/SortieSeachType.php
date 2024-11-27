@@ -63,9 +63,9 @@ class SortieSeachType extends AbstractType
                 'label' => 'Site',
                 'required' => false,
             ])
-            ->add('search', SubmitType::class, [
-                'label' => 'Rechercher',
-            ])
+            // ->add('search', SubmitType::class, [
+            //     'label' => 'Rechercher',
+            // ])
         ;
     }
 

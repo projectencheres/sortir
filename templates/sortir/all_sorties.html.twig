@@ -16,38 +16,65 @@
         <a href="{{ path('app_sortie_create') }}" class="btn btn-success btn-sm">Créer une sortie</a>
     </div>
 
-     <!-- Formulaire de filtre -->
-    <div class="mb-4">
-        {{ form_start(form, {'attr': {'class': 'row g-3'}}) }}
-            <div class="col-md-3">
-                {{ form_row(form.site) }}
-            </div>
-            <div class="col-md-3">
-                {{ form_row(form.nom) }}
-            </div>
-            <div class="col-md-3">
-                {{ form_row(form.dateDebut) }}
-            </div>
-            <div class="col-md-3">
-                {{ form_row(form.dateFin) }}
-            </div>
-            <div class="col-md-3">
-                {{ form_row(form.organisateur) }}
-            </div>
-            <div class="col-md-3">
-                {{ form_row(form.inscrit) }}
-            </div>
-            <div class="col-md-3">
-                {{ form_row(form.nonInscrit) }}
-            </div>
-            <div class="col-md-3">
-                {{ form_row(form.passees) }}
-            </div>
-            {# <div class="col-md-12">
-                <button type="submit" class="btn btn-primary">Rechercher</button>
-            </div> #}
+    <!-- Formulaire de filtre -->
+    <div class="filter-form p-3 mb-5 shadow-sm rounded">
+        <h5 class="text-primary mb-4">Filtrer les sorties</h5>
+        {{ form_start(form, {'attr': {'class': 'd-flex flex-wrap align-items-center gap-3'}}) }}
+        
+        <div class="form-group">
+            {{ form_row(form.site, {
+                'label_attr': {'class': 'form-label visually-hidden'},
+                'attr': {'class': 'form-control form-control-sm', 'placeholder': 'Site'}
+            }) }}
+        </div>
+        
+        <div class="form-group">
+            {{ form_row(form.nom, {
+                'label_attr': {'class': 'form-label visually-hidden'},
+                'attr': {'class': 'form-control form-control-sm', 'placeholder': 'Nom de la sortie'}
+            }) }}
+        </div>
+        
+        <div class="form-group">
+            {{ form_row(form.dateDebut, {
+                'label_attr': {'class': 'form-label visually-hidden'},
+                'attr': {'class': 'form-control form-control-sm', 'placeholder': 'Date début'}
+            }) }}
+        </div>
+        
+        <div class="form-group">
+            {{ form_row(form.dateFin, {
+                'label_attr': {'class': 'form-label visually-hidden'},
+                'attr': {'class': 'form-control form-control-sm', 'placeholder': 'Date fin'}
+            }) }}
+        </div>
+        <div class="form-group">
+            <button type="submit" class="btn btn-primary btn-sm">Rechercher</button>
+        </div>
+    
+        <div class="form-check">
+            {{ form_widget(form.inscrit, {'attr': {'class': 'form-check-input'}}) }}
+            {{ form_label(form.inscrit, 'Inscrit', {'label_attr': {'class': 'form-check-label'}}) }}
+        </div>
+        
+        <div class="form-check">
+            {{ form_widget(form.nonInscrit, {'attr': {'class': 'form-check-input'}}) }}
+            {{ form_label(form.nonInscrit, 'Non inscrit', {'label_attr': {'class': 'form-check-label'}}) }}
+        </div>
+        
+        <div class="form-check">
+            {{ form_widget(form.passees, {'attr': {'class': 'form-check-input'}}) }}
+            {{ form_label(form.passees, 'Passées', {'label_attr': {'class': 'form-check-label'}}) }}
+        </div>
+        
+        <div class="form-check">
+            {{ form_widget(form.organisateur, {'attr': {'class': 'form-check-input'}}) }}
+            {{ form_label(form.organisateur, 'Organisateur', {'label_attr': {'class': 'form-check-label'}}) }}
+        </div>
+        
         {{ form_end(form) }}
     </div>
+
     <div class="row">
         {% for sortie in sorties %}
             <div class="col-md-4">
@@ -84,7 +111,7 @@
                             <a href="{{ path('app_sortir_show', {id: sortie.id}) }}" class="btn btn-secondary btn-sm mb-2">Voir détails</a>
 
                             {% if app.user == sortie.organisateur and sortie.dateHeureDebut > "now"|date %}
-                                <a href="#" class="btn btn-warning btn-sm mb-2">Modifier</a>
+                                <a href="{{ path('app_sortir_edit', {id: sortie.id}) }}" class="btn btn-warning btn-sm mb-2">Modifier</a>
                                 <a href="{{ path('app_sortir_delete', {id: sortie.id}) }}" class="btn btn-danger btn-sm mb-2">Supprimer</a>
                                 {% if sortie.etat != 'Annulée' %}
                                     <a href="{{ path('app_sortir_cancel', {id: sortie.id}) }}" class="btn btn-danger btn-sm mb-2">Annuler</a>

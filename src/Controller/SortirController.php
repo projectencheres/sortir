@@ -6,6 +6,7 @@ use App\Entity\Lieu;
 use App\Entity\Sortie;
 use App\Form\LieuType;
 use App\Form\SortieType;
+use App\Form\SortieEditType;
 use App\Form\SortieSeachType;
 use App\Form\SortieCancelType;
 use App\Form\SortieCreateType;
@@ -26,8 +27,7 @@ class SortirController extends AbstractController
         private ParticipantRepository $participantRepository,
         private SortieRepository $sortieRepository,
         private LieuRepository $lieuRepository,
-    )
-    {
+    ){
     }
 
         #[Route('/sortie/create', name: 'app_sortie_create')]
@@ -70,6 +70,7 @@ class SortirController extends AbstractController
 
             return $this->render('sortir/create.html.twig', [
                 'form' => $form->createView(),
+                'sortie' => $sortie,
             ]);
     }
 
@@ -84,8 +85,10 @@ class SortirController extends AbstractController
 
         $sorties = $form->isSubmitted() && $form->isValid()
             ? $this->sortieRepository->findByFiltres($critere, $participant)
-            : $this->sortieRepository->findAll();
+            : $this->sortieRepository->findAllOrderByDate();
+            // $critere = $form->getData();
 
+            // dd($critere);
             // $sorties = $this->sortieRepository->findAll();
         return $this->render('sortir/all_sorties.html.twig', [
             'sorties' => $sorties,
@@ -173,7 +176,7 @@ class SortirController extends AbstractController
         return $this->redirectToRoute('app_all_sorties');
     }
 
-    #[Route('/sortie/cancel/{id}', name: 'app_sortir_cancel', methods: ['GET', 'POST'])]
+    #[Route('/sortie/cancel/{id}', name: 'app_sortir_cancel', requirements:['id'=>'\d+'], methods: ['GET', 'POST'])]
     public function cancel(Request $request, int $id): Response
     {
         $sortie = $this->sortieRepository->find($id);
@@ -188,7 +191,7 @@ class SortirController extends AbstractController
             return $this->addFlash('error', 'La sortie a déjà commencé.');
         }
 
-        if ($this->getUser() !== $sortie->getOrganisateur()) {
+        if (!($this->getUser() === $sortie->getOrganisateur() || $this->isGranted('ROLE_ADMIN')) ) {
             return $this->addFlash('error', 'Vous n\'êtes pas autorisé à annuler cette sortie.');
         }
         
@@ -244,7 +247,6 @@ class SortirController extends AbstractController
     public function show(int $id): Response
     {
         $sortie = $this->sortieRepository->find($id);
-        //dd($sortie);
         if (!$sortie) {
             $this->addFlash('error', 'La sortie demandée n\'existe pas.');
             return $this->redirectToRoute('app_all_sorties');
@@ -252,6 +254,44 @@ class SortirController extends AbstractController
 
         return $this->render('sortir/show.html.twig', [
             'sortie' => $sortie,
+        ]);
+    }
+
+    //route pour modifier une sortie
+    #[Route('/sortie/edit/{id}', name: 'app_sortir_edit')]
+    public function edit(Request $request, int $id): Response
+    {
+        $sortie = $this->sortieRepository->find($id);
+
+        if (!$sortie) {
+            $this->addFlash('error', 'La sortie demandée n\'existe pas.');
+            return $this->redirectToRoute('app_all_sorties');
+        }
+
+        if ($this->getUser() !== $sortie->getOrganisateur()) {
+            $this->addFlash('error', 'Vous n\'êtes pas autorisé à modifier cette sortie.');
+            return $this->redirectToRoute('app_all_sorties');
+        }
+
+        if($sortie->getEtat() == 'Annulée'){
+            $this->addFlash('error', 'Vous ne pouvez pas modifier une sortie annulée.');
+            return $this->redirectToRoute('app_all_sorties');
+        }
+
+        $form = $this->createForm(SortieEditType::class, $sortie);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $this->entityManager->persist($sortie);
+            $this->entityManager->flush();
+
+            $this->addFlash('success', 'La sortie a été modifiée avec succès.');
+            return $this->redirectToRoute('app_all_sorties');
+        }
+
+        return $this->render('sortir/edit.html.twig', [
+            'sortie' => $sortie,
+            'form' => $form->createView(),
         ]);
     }
 

@@ -3,88 +3,125 @@
 {% block title %}Créer une Sortie{% endblock %}
 
 {% block body %}
-    <h1>Créer une nouvelle Sortie</h1>
+<div class="container mt-5">
+    <h1 class="text-center mb-4">Créer une nouvelle Sortie</h1>
+    <div class="mb-4">
+        <a href="{{ path('app_all_sorties', {id: sortie.id}) }}" class="btn btn-primary">
+            <i class="fas fa-arrow-left"></i> Revenir à la liste des sorties
+        </a>
+    </div>
+    <div class="card shadow-sm">
+        <div class="card-body">
+            {{ form_start(form, {'attr': {'class': 'needs-validation'}}) }}
+            <div class="row g-4">
+                <!-- Première colonne -->
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        {{ form_row(form.nom, {'attr': {'class': 'form-control'}}) }}
+                    </div>
+                    <div class="mb-3">
+                        {{ form_row(form.dateHeureDebut, {'attr': {'class': 'form-control'}}) }}
+                    </div>
+                    <div class="mb-3">
+                        {{ form_row(form.duree, {'attr': {'class': 'form-control'}}) }}
+                    </div>
+                    <div class="mb-3">
+                        {{ form_row(form.dateLimiteInscription, {'attr': {'class': 'form-control'}}) }}
+                    </div>
+                    <div class="mb-3">
+                        {{ form_row(form.nbInscriptionsMax, {'attr': {'class': 'form-control'}}) }}
+                    </div>
+                </div>
 
-    {{ form_start(form) }}
-        <div class="form-group">
-            {{ form_row(form.nom) }}
-        </div>
-        <div class="form-group">
-            {{ form_row(form.dateHeureDebut) }}
-        </div>
-        <div class="form-group">
-            {{ form_row(form.duree) }}
-        </div>
-        <div class="form-group">
-            {{ form_row(form.dateLimiteInscription) }}
-        </div>
-        <div class="form-group">
-            {{ form_row(form.nbInscriptionsMax) }}
-        </div>
-        <div class="form-group">
-            {{ form_row(form.infosSortie) }}
-        </div>
-        <div class="form-group">
-            {{ form_row(form.site) }}
-        </div>
+                <!-- Deuxième colonne -->
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        {{ form_row(form.infosSortie, {'attr': {'class': 'form-control'}}) }}
+                    </div>
+                    <div class="mb-3">
+                        {{ form_row(form.site, {'attr': {'class': 'form-control'}}) }}
+                    </div>
 
-        <h2>Lieu</h2>
-        <div class="form-group">
-            <label>
-                <input type="radio" name="lieu_choice" value="existing" checked onclick="toggleLieuForm('existing')">
-                Choisir un lieu existant
-            </label>
-            <label>
-                <input type="radio" name="lieu_choice" value="new" onclick="toggleLieuForm('new')">
-                Créer un nouveau lieu
-            </label>
-        </div>
+                    <!-- Sélection du lieu -->
+                    <h5 class="mt-4">Lieu</h5>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="lieu_choice" value="existing" checked onclick="toggleLieuForm('existing')">
+                        <label class="form-check-label">Choisir un lieu existant</label>
+                    </div>
+                    <div class="form-check mb-3">
+                        <input class="form-check-input" type="radio" name="lieu_choice" value="new" onclick="toggleLieuForm('new')">
+                        <label class="form-check-label">Créer un nouveau lieu</label>
+                    </div>
 
-        <div id="lieu-existing" class="form-group">
-            {{ form_row(form.lieu) }}
-            <div id="lieu-info" style="display: none;">
-                <h3>Informations sur le lieu sélectionné</h3>
-                <p id="lieu-nom">Nom : </p>
-                <p id="lieu-rue">Rue : </p>
-                <p id="lieu-coordonnees">Coordonnées : </p>
-                <p id="lieu-ville">Ville : </p>
+                    <!-- Lieu existant -->
+                    <div id="lieu-existing" class="mb-3">
+                        {{ form_row(form.lieu, {'attr': {'class': 'form-select'}}) }}
+                        <div id="lieu-info" class="alert alert-info mt-3" style="display: none;">
+                            <h6 class="mb-2">Informations sur le lieu sélectionné</h6>
+                            <p id="lieu-nom"><strong>Nom :</strong> </p>
+                            <p id="lieu-rue"><strong>Rue :</strong> </p>
+                            <p id="lieu-coordonnees"><strong>Coordonnées :</strong> </p>
+                            <p id="lieu-ville"><strong>Ville :</strong> </p>
+                        </div>
+                    </div>
+
+                    <!-- Nouveau lieu -->
+                    <div id="lieu-new" style="display: none;">
+                        <h6>Créer un nouveau lieu</h6>
+                        <div class="mb-3">
+                            {{ form_row(form.lieuCreation.nom, {'attr': {'class': 'form-control'}}) }}
+                        </div>
+                        <div class="mb-3">
+                            {{ form_row(form.lieuCreation.rue, {'attr': {'class': 'form-control'}}) }}
+                        </div>
+                        <div class="mb-3">
+                            {{ form_row(form.lieuCreation.latitude, {'attr': {'class': 'form-control'}}) }}
+                        </div>
+                        <div class="mb-3">
+                            {{ form_row(form.lieuCreation.longitude, {'attr': {'class': 'form-control'}}) }}
+                        </div>
+                        <div class="mb-3">
+                            {{ form_row(form.lieuCreation.ville, {'attr': {'class': 'form-control'}}) }}
+                        </div>
+                        <div class="mb-3">
+                            {{ form_row(form.lieuCreation.codePostal, {'attr': {'class': 'form-control'}}) }}
+                        </div>
+                    </div>
+                </div>
             </div>
+
+            <!-- Bouton de soumission -->
+            <div class="d-flex justify-content-end mt-4">
+                <button type="submit" class="btn btn-primary">Créer</button>
+            </div>
+            {{ form_end(form) }}
         </div>
+    </div>
+</div>
 
-        <div id="lieu-new" class="form-group" style="display: none;">
-            <h3>Créer un nouveau lieu</h3>
-            {{ form_row(form.lieuCreation.nom) }}
-            {{ form_row(form.lieuCreation.rue) }}
-            {{ form_row(form.lieuCreation.latitude) }}
-            {{ form_row(form.lieuCreation.longitude) }}
-            {{ form_row(form.lieuCreation.ville) }}
-            {{ form_row(form.lieuCreation.codePostal) }}
-        </div>
+<!-- Script JavaScript -->
+<script>
+    function toggleLieuForm(choice) {
+        const existing = document.getElementById('lieu-existing');
+        const newLieu = document.getElementById('lieu-new');
+        const lieuInfo = document.getElementById('lieu-info');
 
-        <button class="btn btn-primary">Créer</button>
-    {{ form_end(form) }}
-
-    <script>
-        function toggleLieuForm(choice) {
-            const existing = document.getElementById('lieu-existing');
-            const newLieu = document.getElementById('lieu-new');
-            const lieuInfo = document.getElementById('lieu-info');
-
-            if (choice === 'existing') {
-                existing.style.display = 'block';
-                newLieu.style.display = 'none';
-                lieuInfo.style.display = 'block';
-            } else {
-                existing.style.display = 'none';
-                newLieu.style.display = 'block';
-                lieuInfo.style.display = 'none';
-            }
+        if (choice === 'existing') {
+            existing.style.display = 'block';
+            newLieu.style.display = 'none';
+            lieuInfo.style.display = 'block';
+        } else {
+            existing.style.display = 'none';
+            newLieu.style.display = 'block';
+            lieuInfo.style.display = 'none';
         }
+    }
 
-        document.addEventListener('DOMContentLoaded', () => {
-            const lieuSelect = document.querySelector('[name="form[lieu]"]'); // Assurez-vous que le chemin correspond au nom exact du champ dans votre formulaire
-            const lieuInfo = document.getElementById('lieu-info');
+    document.addEventListener('DOMContentLoaded', () => {
+        const lieuSelect = document.querySelector('[name="form[lieu]"]'); // Assurez-vous que le chemin correspond au nom exact du champ dans votre formulaire
+        const lieuInfo = document.getElementById('lieu-info');
 
+        if (lieuSelect) {
             lieuSelect.addEventListener('change', (event) => {
                 const selectedOption = event.target.selectedOptions[0]; // L'option sélectionnée
                 if (selectedOption) {
@@ -104,6 +141,7 @@
                     lieuInfo.style.display = 'none';
                 }
             });
-        });
-    </script>
+        }
+    });
+</script>
 {% endblock %}

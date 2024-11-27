@@ -1,0 +1,51 @@
+{% extends 'base.html.twig' %}
+{% block title %}
+    Modifier la sortie
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('css/sortie.css') }}">
+{% endblock %}
+
+{% block body %}
+<div class="container mt-5">
+    <h1>Modifier la sortie</h1>
+
+    {{ form_start(form) }}
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                {{ form_row(form.nom, {'label': 'Nom de la sortie'}) }}
+            </div>
+            <div class="form-group">
+                {{ form_row(form.dateHeureDebut, {'label': 'Date et heure de la sortie'}) }}
+            </div>
+            <div class="form-group">
+                {{ form_row(form.duree, {'label': 'Durée'}) }}
+            </div>
+            <div class="form-group">
+                {{ form_row(form.dateLimiteInscription, {'label': 'Date limite d\'inscription'}) }}
+            </div>
+            
+        </div>
+        <div class="col-md-6">
+            <div class="form-group">
+                {{ form_row(form.nbInscriptionsMax, {'label': 'Nombre de places'}) }}
+            </div>
+            <div class="form-group">
+                {{ form_row(form.infosSortie, {'label': 'Description et infos'}) }}
+            </div>
+            <div class="form-group">
+                {{ form_row(form.site, {'label': 'Site'}) }}
+            </div>
+            <div class="form-group">
+                {{ form_row(form.lieu, {'label': 'Lieu'}) }}
+            </div>
+            
+        </div>
+    </div>
+    <button type="submit" class="btn btn-primary">Modifier la sortie</button>
+    {{ form_end(form) }}
+</div>
+{% endblock %}
