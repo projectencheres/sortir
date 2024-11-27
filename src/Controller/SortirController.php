@@ -14,6 +14,7 @@ use App\Repository\LieuRepository;
 use App\Repository\SortieRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Repository\ParticipantRepository;
+use App\Service\VilleService;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -27,6 +28,7 @@ class SortirController extends AbstractController
         private ParticipantRepository $participantRepository,
         private SortieRepository $sortieRepository,
         private LieuRepository $lieuRepository,
+        private VilleService $villeService,
     )
     {
     }
@@ -35,7 +37,9 @@ class SortirController extends AbstractController
         public function create(
             Request $request,
             EntityManagerInterface $entityManager,
-            LieuRepository $lieuRepository
+            LieuRepository $lieuRepository,
+            VilleService $villeService,
+
         ): Response {
 
             $sortie = new Sortie();
@@ -49,7 +53,19 @@ class SortirController extends AbstractController
             ]);
             $form->handleRequest($request);
 
+            $villes = [];
+            
             if ($form->isSubmitted() && $form->isValid()) {
+
+                $codePostale = $request->get('codePostal')->getData();
+                //dd($codePostale);
+                if ($codePostale) {
+                    try {
+                        $villes = $this->villeService->getVillesparCodePostal($codePostale);
+                    } catch (\Exception $e) {
+                        $this->addFlash('error', 'Erreur lors de la récupération des villes : ' . $e->getMessage());
+                    }
+                }
                 // Vérifier si l'utilisateur a sélectionné un lieu existant
                 $lieu = $form->get('lieuCreation')->getData();
                 if($lieu instanceof Lieu){
@@ -72,6 +88,7 @@ class SortirController extends AbstractController
             return $this->render('sortir/create.html.twig', [
                 'form' => $form->createView(),
                 'sortie' => $sortie,
+                'villes' => $villes,
             ]);
     }
 
