@@ -9,6 +9,8 @@ use App\Form\CsvUploadType;
 use App\Repository\ParticipantRepository;
 use App\Repository\SiteRepository;
 use App\Service\InvitationLinkService;
+use App\Repository\ParticipantRepository;
+use App\Repository\SortieRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -23,12 +25,12 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 #[Route('admin/participants', name: 'app_admin_participants_')]
 class ParticipantController extends AbstractController
 {
-
     private MailerInterface $mailer;
 
     public function __construct(
         private EntityManagerInterface $entityManager,
         private ParticipantRepository $participantRepository,
+        private SortieRepository $sortieRepository,
         MailerInterface $mailer
     ) {
         $this->mailer = $mailer;
@@ -211,7 +213,7 @@ class ParticipantController extends AbstractController
             $this->entityManager->flush();
             $this->addFlash("success", $participant->getPseudo() . " deactivated");
         } else {
-            $this->addFlash("danger", $participant->getPseudo() . " not active");
+            $this->addFlash("danger", "Unable to deactivate ". $participant->getPseudo());
         }
         return $this->redirectToRoute('app_admin_participants_list');
     }
@@ -229,15 +231,47 @@ class ParticipantController extends AbstractController
             throw $this->createAccessDeniedException('Cannot reactivate participant');
         }
 
-        if ($participant->isActif() === false) {
+        if ($participant->isActif() === false || $participant->isActif() === null) {
             $participant->setActif(true);
             $participant->setModifiedAt(new \DateTimeImmutable());
             $this->entityManager->persist($participant);
             $this->entityManager->flush();
             $this->addFlash("success", $participant->getPseudo() . " reactivated");
         } else {
-            $this->addFlash("danger", $participant->getPseudo() . " already activated");
+            $this->addFlash("danger", "Unable to reactivate ". $participant->getPseudo());
         }
+        return $this->redirectToRoute('app_admin_participants_list');
+    }
+
+
+    #[Route('/{id}/delete', name: 'delete', requirements: ['id' => '\d+'], methods: ['GET'])]
+    public function deleteParticipant(int $id): Response {
+
+        $currentUser = $this->getUser();
+        $participant = $this->participantRepository->find($id);
+        $organiserSorties = $this->sortieRepository->findUpcomingSortiesByOrganizer($id);
+
+        if (!$participant) {
+            throw $this->createNotFoundException('Participant not found');
+        }
+
+        if (!$this->isGranted('ROLE_ADMIN')) {
+            throw $this->createAccessDeniedException("Not authorised to delete participant");
+        }
+
+        if($currentUser->getUserIdentifier() === $participant->getUserIdentifier()) {
+            throw $this->createAccessDeniedException("Cannot delete your account");
+        }
+
+        // don't delete this participant if s·he is the organiser of any upcoming events
+        if (!empty($organiserSorties)) {
+            throw $this->createAccessDeniedException("Cannot delete participant because they have organised upcoming events.");
+        }
+
+        $this->entityManager->remove($participant);
+        $this->entityManager->flush();
+        $this->addFlash("success", $participant->getPseudo() . " deleted");
+
         return $this->redirectToRoute('app_admin_participants_list');
     }
 }

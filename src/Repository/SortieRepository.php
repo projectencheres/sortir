@@ -63,21 +63,15 @@ class SortieRepository extends ServiceEntityRepository
         return $qb->getQuery()->getResult();
     }
 
-    public function findAllOrderByDate()
+    public function findUpcomingSortiesByOrganizer(int $participantId): array
     {
         return $this->createQueryBuilder('s')
-            ->orderBy('s.createdAt', 'DESC')
+            ->innerJoin('s.organisateur', 'o')
+            ->where('o.id = :participantId')
+            ->andWhere('s.dateHeureDebut >= :currentTimestamp')
+            ->setParameter('participantId', $participantId)
+            ->setParameter('currentTimestamp', new \DateTimeImmutable())
             ->getQuery()
             ->getResult();
     }
-    
-    //    public function findOneBySomeField($value): ?Sortie
-    //    {
-    //        return $this->createQueryBuilder('s')
-    //            ->andWhere('s.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
 }
