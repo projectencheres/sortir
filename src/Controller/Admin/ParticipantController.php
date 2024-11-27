@@ -34,7 +34,7 @@ class ParticipantController extends AbstractController
         $this->mailer = $mailer;
     }
 
-    #[Route('/create_massiv', name: 'participant')]
+    #[Route('/create-massiv', name: 'create_massiv')]
     public function index(Request $request): Response
     {
         // Créer le formulaire
@@ -62,7 +62,7 @@ class ParticipantController extends AbstractController
             }
         }
 
-        return $this->render('admin/participant/index.html.twig', [
+        return $this->render('admin/participant/csvimport.html.twig', [
             'form' => $form->createView(),
             'headers' => $headers,
             'csvData' => $csvData,
@@ -165,7 +165,7 @@ class ParticipantController extends AbstractController
         }
 
         $this->addFlash('success', "{$sentCount} invitations ont été envoyées avec succès.");
-        return $this->redirectToRoute('app_admin_participant');
+        return $this->redirectToRoute('app_admin_participants_create_massiv');
     }
 
     #[Route('/list', name: 'list', methods: ['GET'])]

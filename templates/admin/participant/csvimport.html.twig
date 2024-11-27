@@ -1,4 +1,3 @@
-{# templates/admin/participant/index.html.twig #}
 {% extends 'base.html.twig' %}
 
 {% block body %}
@@ -14,7 +13,7 @@
 			<div class="mt-4">
 				<h2>Vérification des données avant envoi des invitations</h2>
 				<div class="table-responsive">
-					<form action="{{ path('app_admin_send_invitations') }}" method="POST">
+					<form action="{{ path('app_admin_participants_send_invitations') }}" method="POST">
 						<table class="table table-striped">
 							<thead>
 								<tr>

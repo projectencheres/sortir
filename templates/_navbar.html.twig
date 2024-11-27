@@ -50,13 +50,14 @@
 									<a class="dropdown-item" href="{{ path('admin_sortir_index') }}">Liste des sorties</a>
 								</li>
 								<li><hr class="dropdown-divider"></li>
-								{# <li><a class="dropdown-item" href="#">Créer un participant</a></li>
-																								                            <li><a class="dropdown-item" href="#">Liste des participants</a></li> #}
 							</ul>
 						</li>
 						<li class="nav-item dropdown">
 							<a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">Gerer les participants</a>
 							<ul class="dropdown-menu">
+								<li>
+									<a class="dropdown-item" href="{{ path('app_admin_participants_create_massiv')}}">Importer un CSV</a>
+								</li>
 								<li>
 									<a class="dropdown-item" href="{{ path('app_admin_participants_create_massiv')}}">Créer un participant</a>
 								</li>
