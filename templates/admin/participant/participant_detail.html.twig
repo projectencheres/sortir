@@ -1,0 +1,32 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    {{ participant.pseudo }} details | {{ parent() }}
+{% endblock %}
+
+{% block body %}
+
+    <div class="card mb-3" style="max-width: 540px;">
+        <div class="row g-0">
+            <div class="col-md-4">
+                {% if participant.filename %}
+                    <img src="{{ asset('images/profile/' ~ participant.filename)}}" class="img-fluid rounded-start" alt="participant profile picture">
+                {% else %}
+                    <img src="https://via.placeholder.com/200" alt="Profile Picture" class="img-fluid rounded-start">
+                {% endif %}
+            </div>
+            <div class="col-md-8">
+                <div class="card-body">
+                    <h5 class="card-title"><b>Pseudo: </b>{{ participant.pseudo }}</h5>
+                    <p class="card-text"><b>Nom: </b>{{ participant.prenom }} {{ participant.nom }}</p>
+                    <p class="card-text"><b>Email: </b>{{ participant.email }}</p>
+                    <p class="card-text"><b>Telephone: </b>{{ participant.telephone }}</p>
+                    <p class="card-text"><b>City: </b>{{ participant.site }}</p>
+                    <p class="card-text"><b>Registered: </b><small class="text-body-secondary">{{ participant.createdAt | date('d/m/Y') }}</small></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+
