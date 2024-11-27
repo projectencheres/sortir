@@ -14,8 +14,12 @@ services:
       - "../src/Entity/"
       - "../src/Kernel.php"
 
+    # Services de sécurité explicites
 
-  # Services de sécurité explicites
+  App\Service\InvitationLinkService:
+    arguments:
+      $secret: "%env(INVITATION_SECRET)%"
+
   App\Security\LoginFormAuthenticator:
     autowire: true
     autoconfigure: true
