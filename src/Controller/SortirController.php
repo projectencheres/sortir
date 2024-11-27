@@ -27,8 +27,7 @@ class SortirController extends AbstractController
         private ParticipantRepository $participantRepository,
         private SortieRepository $sortieRepository,
         private LieuRepository $lieuRepository,
-    )
-    {
+    ){
     }
 
         #[Route('/sortie/create', name: 'app_sortie_create')]
