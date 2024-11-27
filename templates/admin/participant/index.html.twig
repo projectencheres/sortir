@@ -1,0 +1,47 @@
+{# templates/admin/participant/index.html.twig #}
+{% extends 'base.html.twig' %}
+
+{% block body %}
+	<div class="container mt-4">
+		<h1>Invitation des participants</h1>
+
+		{{ form_start(form) }}
+		{{ form_widget(form) }}
+		<button type="submit" class="btn btn-primary">Uploader le CSV</button>
+		{{ form_end(form) }}
+
+		{% if headers is not empty and csvData is not empty %}
+			<div class="mt-4">
+				<h2>Vérification des données avant envoi des invitations</h2>
+				<div class="table-responsive">
+					<form action="{{ path('app_admin_send_invitations') }}" method="POST">
+						<table class="table table-striped">
+							<thead>
+								<tr>
+									{% for header in headers %}
+										<th>{{ header }}</th>
+									{% endfor %}
+								</tr>
+							</thead>
+							<tbody>
+								{% for row in csvData %}
+									<tr>
+										{% for cell in row %}
+											<td>
+												<input type="hidden" name="data[{{ loop.parent.loop.index0 }}][{{ loop.index0 }}]" value="{{ cell }}">
+												{{ cell }}
+											</td>
+										{% endfor %}
+									</tr>
+								{% endfor %}
+							</tbody>
+						</table>
+						<button type="submit" class="btn btn-success">
+							Envoyer les invitations par email
+						</button>
+					</form>
+				</div>
+			</div>
+		{% endif %}
+	</div>
+{% endblock %}
