@@ -9,7 +9,7 @@
                 <!-- Profile Photo -->
                 <div class="text-center">
                     {% if participant.filename %}
-                        <img src="{{ asset('images/profile/' ~ participant.filename) }}" alt="Profile Picture" class="img-fluid rounded-circle" style="max-width: 200px; max-height: 200px;">
+                        <img src="{{ asset('images/profile/' ~ participant.filename) }}" alt="Profile Picture" class="img-fluid rounded-start" style="max-width: 200px; max-height: 200px;">
                     {% else %}
                         <img src="https://via.placeholder.com/200" alt="Profile Picture" class="img-fluid rounded-circle">
                     {% endif %}

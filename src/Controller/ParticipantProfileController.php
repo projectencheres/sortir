@@ -12,7 +12,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
 #[Route('/participant', name: 'participant_')]
-class ParticipantController extends AbstractController
+class ParticipantProfileController extends AbstractController
 {
 
     #[Route('/profile', name: 'profile', methods: ['GET'])]

@@ -32,7 +32,7 @@ class SortirController extends AbstractController
     )
     {
     }
-
+    
         #[Route('/sortie/create', name: 'app_sortie_create')]
         public function create(
             Request $request,
