@@ -6,6 +6,7 @@ namespace App\Controller\Admin;
 
 use App\Entity\Participant;
 use App\Form\CsvUploadType;
+use App\Form\RegistrationType;
 use App\Repository\ParticipantRepository;
 use App\Service\InvitationLinkService;
 use App\Repository\SortieRepository;
@@ -34,7 +35,7 @@ class ParticipantController extends AbstractController
         $this->mailer = $mailer;
     }
 
-    #[Route('/create-massiv', name: 'create_massiv')]
+    #[Route('/csvimport', name: 'csvimport')]
     public function index(Request $request): Response
     {
         // Créer le formulaire
@@ -66,6 +67,88 @@ class ParticipantController extends AbstractController
             'form' => $form->createView(),
             'headers' => $headers,
             'csvData' => $csvData,
+        ]);
+    }
+
+    #[Route('/create', name: 'create')]
+    public function create(
+        Request $request,
+        InvitationLinkService $invitationService,
+        UserPasswordHasherInterface $passwordEncoder,
+        EntityManagerInterface $entityManager,
+        LoggerInterface $logger
+    ): Response {
+
+        $user = new Participant();
+
+
+        $form = $this->createForm(RegistrationType::class, $user);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+
+            $emailTo = $form->get('email')->getData();
+
+            // Rechercher un utilisateur existant par email
+            $existingUser = null;
+            if ($form->get('email')->getData()) {
+                $existingUser = $entityManager->getRepository(Participant::class)
+                    ->findOneBy(['email' => $form->get('email')->getData()]);
+            }
+            if ($existingUser) {
+                $logger->debug(" !!!!!!!!!!!!!!! Un utilisateur avec cet email existe déjà.!!!!!!!!!!!!!");
+                $this->addFlash('error', 'Un utilisateur avec cet email existe déjà.');
+                return $this->redirectToRoute('app_admin_participants_create');
+            } else {
+                try {
+                    // generation du liens securisé
+                    $signedData  = $invitationService->generateSignedEmail($form->get('email')->getData());
+                    // envoi de l'email
+                    $email = (new Email())
+                        ->from('sortir.local@testnet.com')
+                        ->to($emailTo)
+                        ->subject('Invitation à rejoindre notre plateforme')
+                        ->html($this->renderView('emails/invitations.html.twig', [
+                            'nom' => $form->get('nom')->getData(),
+                            'prenom' => $form->get('prenom')->getData(),
+                            'inscriptionLink' => $this->generateUrl('app_register', [
+                                'signed' => $signedData
+                            ], UrlGeneratorInterface::ABSOLUTE_URL)
+                        ]));
+                    $this->mailer->send($email);
+
+                    // Création du nouvel utilisateur
+                    $user->setPassword('');
+                    $user->setRoles(['ROLE_USER']);
+                    $user->setEmail($form->get('email')->getData());
+                    $user->setPseudo($form->get('pseudo')->getData());
+                    $user->setNom($form->get('nom')->getData());
+                    $user->setPrenom($form->get('prenom')->getData());
+                    $user->setTelephone($form->get('telephone')->getData());
+                    $user->setActif(false);
+                    $user->setAdministrateur(false);
+
+                    $entityManager->persist($user);
+                    $entityManager->flush();
+                    $this->addFlash('success', 'L\'utilisateur a été créé avec succès.');
+                    $logger->debug(" !!!!!!!!!!!!!!! Utilasteur déjà creer !!!!!!!!!!!!!");
+                    return $this->redirectToRoute('app_admin_participants_create');
+                } catch (\Exception $e) {
+                    $this->addFlash('error', "Erreur lors de l'envoi à {$emailTo}: {$e->getMessage()}");
+                    $logger->error('Erreur lors de l\'envoi : ' . $e->getMessage(), [
+                        'email' => $emailTo,
+                        'error' => $e->getMessage(),
+                        'trace' => $e->getTraceAsString()
+                    ]);
+                    return $this->redirectToRoute('app_admin_participants_create');
+                }
+            }
+
+            return $this->redirectToRoute('app_admin_participants_create');
+        }
+
+        return $this->render('admin/participant/create.html.twig', [
+            'registrationForm' => $form->createView(),
         ]);
     }
 
@@ -122,7 +205,8 @@ class ParticipantController extends AbstractController
                 $user->setRoles(['ROLE_USER']);
                 $user->setActif(false);
                 $user->setAdministrateur(false);
-                $user->setPassword($passwordEncoder->hashPassword($user, 'password'));
+                $user->setPassword('');
+
                 $entityManager->persist($user);
                 $entityManager->flush();
             } catch (\Exception $e) {
@@ -135,7 +219,7 @@ class ParticipantController extends AbstractController
 
 
             try {
-                $signedData  = $invitationService->generateSignedEmail($userData);
+                $signedData  = $invitationService->generateSignedEmail($emailTo);
 
                 $email = (new Email())
                     ->from('sortir.local@testnet.com')
@@ -165,7 +249,7 @@ class ParticipantController extends AbstractController
         }
 
         $this->addFlash('success', "{$sentCount} invitations ont été envoyées avec succès.");
-        return $this->redirectToRoute('app_admin_participants_create_massiv');
+        return $this->redirectToRoute('app_admin_participants_csvimport');
     }
 
     #[Route('/list', name: 'list', methods: ['GET'])]

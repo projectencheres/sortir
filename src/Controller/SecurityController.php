@@ -113,10 +113,15 @@ class SecurityController extends AbstractController
                 $entityManager->flush();
                 $this->addFlash('success', 'Votre mot de passe a été mis à jour avec succès.');
             } else {
-                // Création d'un nouvel utilisateur
+                // Création complète du nouvel utilisateur
                 $user->setPassword($hashedPassword);
                 $user->setRoles(['ROLE_USER']);
                 $user->setActif(true);
+                $user->setEmail($form->get('email')->getData());
+                $user->setPseudo($form->get('pseudo')->getData());
+                $user->setNom($form->get('nom')->getData());
+                $user->setPrenom($form->get('prenom')->getData());
+                $user->setTelephone($form->get('telephone')->getData());
 
                 $entityManager->persist($user);
                 $entityManager->flush();
