@@ -55,6 +55,7 @@
                                 <tr>
                                     <th>Pseudo</th>
                                     <th>Nom</th>
+                                    <th>Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -62,6 +63,8 @@
                                     <tr>
                                         <td>{{ participant.pseudo }}</td>
                                         <td>{{ participant.nom }} {{ participant.prenom }}</td>
+                                        <td><a href="{{ path('participant_detail', {'id': participant.id}) }}" class="btn btn-info btn-sm">Voir Profil</a></td>
+
                                     </tr>
                                 {% endfor %}
                             </tbody>

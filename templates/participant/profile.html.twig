@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %} Profil - {{ participant.pseudo }} {% endblock %}
+{% block title %} {{ participant.pseudo }}'s profile page {% endblock %}
 
 {% block body %}
     <div class="container py-5">
@@ -9,51 +9,31 @@
                 <!-- Profile Photo -->
                 <div class="text-center">
                     {% if participant.filename %}
-                        <img src="{{ asset('images/profile/' ~ participant.filename) }}" alt="Profile Picture" class="img-fluid rounded-start" style="max-width: 200px; max-height: 200px;">
+                        <img src="{{ asset('images/profile/' ~ participant.filename) }}" alt="Profile Picture" class="img-thumbnail" style="max-width: 200px; max-height: 200px;">
                     {% else %}
-                        <img src="https://via.placeholder.com/200" alt="Profile Picture" class="img-fluid rounded-circle">
+                        <img src="https://via.placeholder.com/200" alt="Profile Picture" class="img-thumbnail">
                     {% endif %}
                 </div>
             </div>
 
             <div class="col-md-8">
                 <!-- Profile Details -->
-                <h2>{{ participant.pseudo }}</h2>
-                <p class="text-muted">Joined on {{ participant.createdAt|date('d M, Y') }}</p>
+                <h2><b>{{ participant.pseudo }}</b></h2>
 
                 <div class="row mt-4">
                     <div class="col-sm-6">
-                        <h5>Prenom</h5>
-                        <p>{{ participant.prenom }}</p>
+                        <p><strong>Prenom</strong>: {{ participant.prenom }}</p>
+                        <p><strong>Nom</strong>: {{ participant.nom }}</p>
+                        <p><strong>Email</strong>: {{ participant.email }}</p>
+                        <p><strong>Telephone</strong>: {{ participant.telephone }}</p>
+                        <p><strong>Ville de rattachement</strong>: {{ participant.site ? participant.site.nom : 'Inconnu' }}</p>
                     </div>
-                    <div class="col-sm-6">
-                        <h5>Nom</h5>
-                        <p>{{ participant.nom }}</p>
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="col-sm-6">
-                        <h5>Email</h5>
-                        <p>{{ participant.email }}</p>
-                    </div>
-                    <div class="col-sm-6">
-                        <h5>Telephone</h5>
-                        <p>{{ participant.telephone }}</p>
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="col-sm-6">
-                        <h5>City</h5>
-                        <p>{{ participant.site ? participant.site.nom : 'Inconnu' }}</p>
-                    </div>
-                </div>
 
                 <div class="mt-4">
                     {% if app.user.id == participant.id or is_granted('ROLE_ADMIN') %}
                         <a href="{{ path('participant_edit', {id: participant.id}) }}" class="btn btn-primary">Modifier</a>
                     {% endif %}
+                    <a href="{{ path('app_all_sorties') }}" class="btn btn-primary">Retour</a>
                 </div>
             </div>
         </div>

@@ -52,10 +52,6 @@
 
 {% block body %}
 <div class="container mt-5">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1>Liste des Participants</h1>
-        <a href="#" class="btn btn-primary btn-create-site">Créer un·e utilisateur·rice</a>
-    </div>
     <div class="table-container">
         <table class="table table-bordered table-hover">
             <thead>
@@ -73,12 +69,12 @@
                         {% if is_granted('ROLE_ADMIN') %}
                             <td class="action-buttons">
                                 <a href="{{ path('app_admin_participants_detail', {'id': participant.id}) }}" class="btn btn-info btn-sm">Voir</a>
-                                {% if participant.actif == 1 %}
-                                    <a href="{{ path('app_admin_participants_deactivate', {'id': participant.id}) }}" class="btn btn-warning btn-sm">Desactiver</a>
-                                {% else %}
+                                {% if participant.actif is null or participant.actif == 0 %}
                                     <a href="{{ path('app_admin_participants_reactivate', {'id': participant.id}) }}" class="btn btn-secondary btn-sm">Activer</a>
+                                {% else %}
+                                    <a href="{{ path('app_admin_participants_deactivate', {'id': participant.id}) }}" class="btn btn-warning btn-sm">Desactiver</a>
                                 {% endif %}
-                                <a href="#" class="btn btn-danger btn-sm"
+                                <a href="{{ path('app_admin_participants_delete', {'id': participant.id}) }}" class="btn btn-danger btn-sm"
                                    onclick="return confirm('Êtes-vous sûr de vouloir supprimer ce participant ?')">Supprimer</a>
                             </td>
                         {% endif %}

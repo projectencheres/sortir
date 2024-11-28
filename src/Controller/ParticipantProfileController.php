@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Participant;
 use App\Form\ParticipantType;
+use App\Repository\ParticipantRepository;
 use App\Service\FileUploader;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -14,7 +15,6 @@ use Symfony\Component\Routing\Attribute\Route;
 #[Route('/participant', name: 'participant_')]
 class ParticipantProfileController extends AbstractController
 {
-
     #[Route('/profile', name: 'profile', methods: ['GET'])]
     public function detail(): Response
     {
@@ -27,7 +27,20 @@ class ParticipantProfileController extends AbstractController
             'participant' => $participant,
         ]);
     }
-    #[Route('/{id}/edit', name: 'edit')]
+
+    #[Route('/{id}', name: 'detail', requirements: ['id' => '\d+'], methods: ['GET'])]
+    public function participantDetail(int $id, ParticipantRepository $participantRepository): Response
+    {
+        $participant = $participantRepository->find($id);
+
+        if (!$participant) {
+            throw $this->createNotFoundException('Participant not found');
+        }
+        return $this->render('participant/profile.html.twig', [
+            "participant" => $participant,
+        ]);
+    }
+    #[Route('/{id}/edit', name: 'edit', requirements: ['id' => '\d+'])]
     public function edit(
         Participant $participant,
         Request $request,
@@ -35,11 +48,6 @@ class ParticipantProfileController extends AbstractController
         FileUploader $fileUploader
     ): Response
     {
-
-        /*
-         * fixes to be done: telephone needs to be rendered with the leading 0,
-         * photo needs to be rendered on the profile page and probably saved in the db as well
-         */
 
         if (!$this->getUser()) {
             return $this->redirectToRoute('app_login');

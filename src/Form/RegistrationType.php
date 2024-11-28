@@ -12,6 +12,7 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints as Assert;
 
 class RegistrationType extends AbstractType
 {
@@ -25,8 +26,23 @@ class RegistrationType extends AbstractType
             ->add('email', EmailType::class)
             ->add('plainPassword', RepeatedType::class, [
                 'type' => PasswordType::class,
-                'first_options' => ['label' => 'Password'],
-                'second_options' => ['label' => 'Repeat Password']
+                'mapped' => false,
+                'first_options' => ['label' => 'Mot de passe'],
+                'second_options' => ['label' => 'Confirmer le mot de passe'],
+                'constraints' => [
+                    new Assert\NotBlank([
+                        'message' => 'Veuillez entrer un mot de passe'
+                    ]),
+                    new Assert\Length([
+                        'min' => 8,
+                        'minMessage' => 'Le mot de passe doit contenir au moins {{ limit }} caractères',
+                    ]),
+                    // Une seule regex simple pour un niveau de sécurité moyen
+                    new Assert\Regex([
+                        'pattern' => '/^(?=.*[A-Za-z])(?=.*\d).{8,}$/',
+                        'message' => 'Le mot de passe doit contenir au moins une lettre et un chiffre'
+                    ])
+                ],
             ]);
     }
 
