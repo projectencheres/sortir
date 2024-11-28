@@ -63,6 +63,14 @@ class SortieRepository extends ServiceEntityRepository
         return $qb->getQuery()->getResult();
     }
 
+    public function findAllOrderByDate()
+    {
+        return $this->createQueryBuilder('s')
+            ->orderBy('s.createdAt', 'DESC')
+            ->getQuery()
+            ->getResult();
+    }
+
     public function findUpcomingSortiesByOrganizer(int $participantId): array
     {
         return $this->createQueryBuilder('s')

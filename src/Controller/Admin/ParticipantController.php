@@ -186,7 +186,7 @@ class ParticipantController extends AbstractController
         if (!$participant) {
             throw $this->createNotFoundException('Participant not found');
         }
-        return $this->render('admin/participant/participant_detail.html.twig', [
+        return $this->render('participant/profile.html.twig', [
             "participant" => $participant,
         ]);
     }
