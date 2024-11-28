@@ -22,7 +22,7 @@ class RegistrationType extends AbstractType
             ->add('pseudo', TextType::class)
             ->add('nom', TextType::class)
             ->add('prenom', TextType::class)
-            ->add('telephone', IntegerType::class)
+            ->add('telephone', TextType::class)
             ->add('email', EmailType::class)
             ->add('plainPassword', RepeatedType::class, [
                 'type' => PasswordType::class,
