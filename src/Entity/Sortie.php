@@ -71,6 +71,9 @@ class Sortie
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $motifAnnulation = null;
 
+    #[ORM\Column(nullable: true)]
+    private ?bool $is_archives = null;
+
     public function __construct()
     {
         $this->participants = new ArrayCollection();
@@ -273,6 +276,18 @@ class Sortie
     public function setMotifAnnulation(?string $motifAnnulation): static
     {
         $this->motifAnnulation = $motifAnnulation;
+
+        return $this;
+    }
+
+    public function isArchives(): ?bool
+    {
+        return $this->is_archives;
+    }
+
+    public function setArchives(?bool $is_archives): static
+    {
+        $this->is_archives = $is_archives;
 
         return $this;
     }

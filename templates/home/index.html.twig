@@ -1,11 +1,79 @@
 {% extends 'base.html.twig' %}
 
 {% block title %}Accueil{% endblock %}
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .cover-image {
+            position: relative;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            background-size: cover;
+            color: white;
+        }
+
+        .cover-content h1 {
+            font-size: 3rem;
+            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.7);
+        }
+
+        .cover-content p {
+            font-size: 1.5rem;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.6);
+        }
+
+        .card:hover {
+            transform: scale(1.02);
+            transition: transform 0.2s ease-in-out;
+        }
+    </style>
+{% endblock %}
 
 {% block body %}
-
-<div class="example-wrapper">
-    <h1>Bienvenue sur votre Site Sortir.com</h1>
-    <p>Le site de référence pour organiser vos sorties entre amis !</p>
+<!-- Section image de couverture -->
+<div class="cover-image position-relative text-center text-white d-flex justify-content-center align-items-center" style="background-image: url('/img/sortie_cover.jpg'); background-size: cover; height: 60vh; position: relative;">
+    <div class="overlay" style="background-color: rgba(0, 0, 0, 0.6); position: absolute; top: 0; left: 0; width: 100%; height: 100%;"></div>
+    <div class="cover-content position-relative">
+        <h1 class="display-4 font-weight-bold">Bienvenue sur votre site Sortir.com</h1>
+        <p class="lead">Le site de référence pour organiser et participer à des sorties inoubliables !</p>
+        {% if app.user %}
+            <a href="{{ path('app_all_sorties') }}" class="btn btn-success btn-lg">Voir toutes les sorties</a>
+        {% else %}
+            <a href="{{ path('app_login') }}" class="btn btn-primary btn-lg">Voir toutes les sorties</a>
+        {% endif %}
+    </div>
 </div>
+
+<!-- Section des sorties passées -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <h2 class="text-center mb-4">Sorties déjà passées</h2>
+        {% if sorties_passées|length > 0 %}
+            <div class="row">
+                {% for sortie in sorties_passées %}
+                    <div class="col-md-4 mb-4 text-center">
+                        <div class="card h-100 shadow-sm">
+                            <div class="card-body">
+                                <h5 class="card-title">{{ sortie.nom }}</h5>
+                                <p class="card-text">
+                                    <strong>Date :</strong> {{ sortie.dateHeureDebut|date('d/m/Y H:i') }}<br>
+                                    <strong>Lieu :</strong> {{ sortie.lieu.nom ?? 'Non défini' }}<br>
+                                    <strong>Etat : </strong> <span class="badge bg-secondary">{{ sortie.etat }}</span><br>
+                                    <strong>Participants :</strong> {{ sortie.participants|length }}<br>
+                                </p>
+                                <p class="text-muted small">Organisé par : {{ sortie.organisateur }}</p>
+                            </div>
+                            <div class="card-footer">
+                                <span class="badge bg-danger">Sortie Cloturée!</span>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p class="text-center">Aucune sortie passée n'est disponible pour le moment.</p>
+        {% endif %}
+    </div>
+</section>
 {% endblock %}

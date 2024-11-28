@@ -66,10 +66,46 @@ class SortieRepository extends ServiceEntityRepository
     public function findAllOrderByDate()
     {
         return $this->createQueryBuilder('s')
+            //->where('s.isArchives = :archives')
+            //->andWhere('s.etat = :etat')
+            //->setParameter('etat', 'Créée')
+            //->setParameter('archives', false)
             ->orderBy('s.createdAt', 'DESC')
             ->getQuery()
             ->getResult();
     }
+
+     public function findPastSorties(): array
+     {
+          return $this->createQueryBuilder('s')
+               ->andWhere('s.dateHeureDebut < :today')
+               ->setParameter('today', new \DateTime())
+               ->orderBy('s.dateHeureDebut', 'DESC') // Trier par date croissante
+               ->getQuery()
+               ->getResult();
+     }
+     // recupere les sorties qui sont passées 
+     public function findSortiesPassees($participant): array
+     {
+          return $this->createQueryBuilder('s')
+               ->join('s.participants', 'p')
+               ->andWhere('p = :participant')
+               ->andWhere('s.dateHeureDebut < :today')
+               ->setParameter('today', new \DateTime())
+               ->orderBy('s.dateHeureDebut', 'DESC') // Trier par date decroissante
+               ->getQuery()
+               ->getResult();
+     }
+     // recuperer les sorties qui sont archivées
+     public function findSortiesArchives(): array
+     {
+          return $this->createQueryBuilder('s')
+               ->andWhere('s.dateHeureDebut < :oneMonthAgo')
+               ->setParameter('oneMonthAgo', (new \DateTime())->modify('-1 month'))
+               ->orderBy('s.dateHeureDebut', 'ASC') // Trier par date croissante
+               ->getQuery()
+               ->getResult();
+     }
 
     public function findUpcomingSortiesByOrganizer(int $participantId): array
     {

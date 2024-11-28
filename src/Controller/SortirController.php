@@ -14,6 +14,7 @@ use App\Repository\LieuRepository;
 use App\Repository\SortieRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Repository\ParticipantRepository;
+use App\Service\VilleService;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -27,14 +28,18 @@ class SortirController extends AbstractController
         private ParticipantRepository $participantRepository,
         private SortieRepository $sortieRepository,
         private LieuRepository $lieuRepository,
-    ){
+        private VilleService $villeService,
+    )
+    {
     }
-
+    
         #[Route('/sortie/create', name: 'app_sortie_create')]
         public function create(
             Request $request,
             EntityManagerInterface $entityManager,
-            LieuRepository $lieuRepository
+            LieuRepository $lieuRepository,
+            VilleService $villeService,
+
         ): Response {
 
             $sortie = new Sortie();
@@ -48,7 +53,19 @@ class SortirController extends AbstractController
             ]);
             $form->handleRequest($request);
 
+            $villes = [];
+            
             if ($form->isSubmitted() && $form->isValid()) {
+
+                $codePostale = $request->get('codePostal')->getData();
+                //dd($codePostale);
+                if ($codePostale) {
+                    try {
+                        $villes = $this->villeService->getVillesparCodePostal($codePostale);
+                    } catch (\Exception $e) {
+                        $this->addFlash('error', 'Erreur lors de la récupération des villes : ' . $e->getMessage());
+                    }
+                }
                 // Vérifier si l'utilisateur a sélectionné un lieu existant
                 $lieu = $form->get('lieuCreation')->getData();
                 if($lieu instanceof Lieu){
@@ -71,10 +88,11 @@ class SortirController extends AbstractController
             return $this->render('sortir/create.html.twig', [
                 'form' => $form->createView(),
                 'sortie' => $sortie,
+                'villes' => $villes,
             ]);
     }
 
-    #[Route('/sorties/list', name: 'app_all_sorties')]
+    #[Route('/sorties/list', name: 'app_all_sorties', methods: ['GET', 'POST'])]
     public function index(Request $request): Response
     {   
         $form = $this->createForm(SortieSeachType::class);
@@ -97,7 +115,7 @@ class SortirController extends AbstractController
     }
 
     // route pour s'inscrire a une sortie
-    #[Route('/sortie/subscribe/{id}', name: 'app_sortir_subscribe')]
+    #[Route('/sortie/subscribe/{id}', name: 'app_sortir_subscribe', requirements:['id'=>'\d+'])]
     public function subscribe(int $id): Response
     {
         $sortie = $this->sortieRepository->find($id);
@@ -139,7 +157,7 @@ class SortirController extends AbstractController
         return $this->redirectToRoute('app_all_sorties');
     }
 
-    #[Route('/sortie/unsubscribe/{id}', name: 'app_sortir_unsubscribe')]
+    #[Route('/sortie/unsubscribe/{id}', name: 'app_sortir_unsubscribe', requirements:['id'=>'\d+'])]
     public function unsubscribe(int $id): Response
     {
         $sortie = $this->sortieRepository->find($id);
@@ -220,7 +238,7 @@ class SortirController extends AbstractController
     }
 
     //route pour supprimer une sortie
-    #[Route('/sortie/delete/{id}', name: 'app_sortir_delete')]
+    #[Route('/sortie/delete/{id}', name: 'app_sortir_delete', requirements:['id'=>'\d+'], methods: ['GET', 'POST'])]
     public function delete(int $id): Response
     {
         $sortie = $this->sortieRepository->find($id);
@@ -243,7 +261,7 @@ class SortirController extends AbstractController
     }
 
     //route pour afficher les détails d'une sortie
-    #[Route('/sortie/{id}', name: 'app_sortir_show')]
+    #[Route('/sortie/{id}', name: 'app_sortir_show', requirements:['id'=>'\d+'])]
     public function show(int $id): Response
     {
         $sortie = $this->sortieRepository->find($id);
@@ -258,7 +276,7 @@ class SortirController extends AbstractController
     }
 
     //route pour modifier une sortie
-    #[Route('/sortie/edit/{id}', name: 'app_sortir_edit')]
+    #[Route('/sortie/edit/{id}', name: 'app_sortir_edit', requirements:['id'=>'\d+'], methods: ['GET', 'POST'])]
     public function edit(Request $request, int $id): Response
     {
         $sortie = $this->sortieRepository->find($id);
