@@ -37,7 +37,11 @@
     <div class="cover-content position-relative">
         <h1 class="display-4 font-weight-bold">Bienvenue sur votre site Sortir.com</h1>
         <p class="lead">Le site de référence pour organiser et participer à des sorties inoubliables !</p>
-        <a href="{{ path('app_login') }}" class="btn btn-primary btn-lg">Voir toutes les sorties</a>
+        {% if app.user %}
+            <a href="{{ path('app_all_sorties') }}" class="btn btn-success btn-lg">Voir toutes les sorties</a>
+        {% else %}
+            <a href="{{ path('app_login') }}" class="btn btn-primary btn-lg">Voir toutes les sorties</a>
+        {% endif %}
     </div>
 </div>
 
@@ -48,20 +52,20 @@
         {% if sorties_passées|length > 0 %}
             <div class="row">
                 {% for sortie in sorties_passées %}
-                    <div class="col-md-4 mb-4">
+                    <div class="col-md-4 mb-4 text-center">
                         <div class="card h-100 shadow-sm">
                             <div class="card-body">
                                 <h5 class="card-title">{{ sortie.nom }}</h5>
                                 <p class="card-text">
                                     <strong>Date :</strong> {{ sortie.dateHeureDebut|date('d/m/Y H:i') }}<br>
                                     <strong>Lieu :</strong> {{ sortie.lieu.nom ?? 'Non défini' }}<br>
-                                    <strong>Etat : </strong> <span class="badge bg-info">{{ sortie.etat }}</span><br>
+                                    <strong>Etat : </strong> <span class="badge bg-secondary">{{ sortie.etat }}</span><br>
                                     <strong>Participants :</strong> {{ sortie.participants|length }}<br>
                                 </p>
                                 <p class="text-muted small">Organisé par : {{ sortie.organisateur }}</p>
                             </div>
                             <div class="card-footer">
-                                <span class="badge bg-secondary">Passée</span>
+                                <span class="badge bg-danger">Sortie Cloturée!</span>
                             </div>
                         </div>
                     </div>
