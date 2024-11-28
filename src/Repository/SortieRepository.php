@@ -70,6 +70,16 @@ class SortieRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+
+     public function findPastSorties(): array
+     {
+          return $this->createQueryBuilder('s')
+               ->andWhere('s.dateHeureDebut < :today')
+               ->setParameter('today', new \DateTime())
+               ->orderBy('s.dateHeureDebut', 'ASC') // Trier par date croissante
+               ->getQuery()
+               ->getResult();
+     }
     
     //    public function findOneBySomeField($value): ?Sortie
     //    {

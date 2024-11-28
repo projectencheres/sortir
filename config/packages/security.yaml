@@ -21,8 +21,8 @@ security:
       provider: app_user_provider
       form_login:
         login_path: app_login
-        check_path: app_login
-        default_target_path: app_home
+        check_path: app_login 
+        default_target_path: app_all_sorties  
         enable_csrf: true
       remember_me:
         secret: "%kernel.secret%"
@@ -33,14 +33,14 @@ security:
         name: REMEMBERME # Nom du cookie
       logout:
         path: app_logout
-        target: app_login # Redirection après déconnexion
+        target: app_home #app_login # Redirection après déconnexion
         invalidate_session: true # Invalide la session
         delete_cookies:
           remember_me: ~ # ~ signifie qu'on utilise la config par defaut
           session: ~
 
   access_control:
-    - { path: ^/(login|register|reset_password), roles: PUBLIC_ACCESS }
+    - { path: ^/(login|register|reset_password|home), roles: PUBLIC_ACCESS }
     - { path: ^/(participant|sortie|sorties), roles: ROLE_USER }
     - { path: ^/admin, roles: ROLE_ADMIN }
 
