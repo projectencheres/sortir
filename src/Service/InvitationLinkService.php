@@ -6,25 +6,16 @@ namespace App\Service;
 class InvitationLinkService
 {
     private string $secret;
-    private const LINK_VALIDITY_HOURS = 24; // Durée de validité en heures
 
     public function __construct(string $secret)
     {
         $this->secret = $secret;
     }
 
-    public function generateSignedEmail(array  $userData): string
+    public function generateSignedEmail(string  $userEmail): string
     {
-        $timestamp = time();
         // ajouter les champs de l'utilisateur à signer
-        $dataToSign = [
-            'pseudo' => $userData['pseudo'],
-            'email' => $userData['email'],
-            'nom' => $userData['nom'],
-            'prenom' => $userData['prenom'],
-            'telephone' => $userData['telephone'] ?? null,
-            'timestamp' => $timestamp
-        ];
+        $dataToSign = ['email' => $userEmail];
         $signature = hash_hmac('sha256', json_encode($dataToSign), $this->secret);
 
         $finalData = array_merge($dataToSign, ['signature' => $signature]);
@@ -41,15 +32,7 @@ class InvitationLinkService
         try {
             $data = json_decode(base64_decode($signedData), true);
 
-            if (!isset($data['email'], $data['timestamp'], $data['signature'])) {
-                return null;
-            }
-
-            // Vérifier si le lien n'a pas expiré
-            $timestamp = (int) $data['timestamp'];
-            $expirationTime = $timestamp + (self::LINK_VALIDITY_HOURS * 3600);
-
-            if (time() > $expirationTime) {
+            if (!isset($data['email'])) {
                 return null;
             }
 
