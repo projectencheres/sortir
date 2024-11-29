@@ -67,8 +67,8 @@ class SortieRepository extends ServiceEntityRepository
     {
         return $this->createQueryBuilder('s')
             //->where('s.isArchives = :archives')
-            //->andWhere('s.etat = :etat')
-            //->setParameter('etat', 'Créée')
+            ->andWhere('s.etat = :etat')
+            ->setParameter('etat', 'Créée')
             //->setParameter('archives', false)
             ->orderBy('s.createdAt', 'DESC')
             ->getQuery()

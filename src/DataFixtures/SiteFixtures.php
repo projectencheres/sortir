@@ -11,18 +11,18 @@ class SiteFixtures extends Fixture
 {
     public function load(ObjectManager $manager): void
     {
-        $faker = Factory::create('fr_FR'); // Utilisation de Faker avec localisation française
+        $faker = Factory::create('fr_FR'); 
 
-        for ($i = 1; $i <= 10; $i++) { // Création de 10 sites
+        for ($i = 1; $i <= 10; $i++) { 
             $site = new Site();
-            $site->setNom($faker->company) // Nom du site basé sur un nom d'entreprise
+            $site->setNom($faker->company) 
                 ->setCreatedAt(new \DateTimeImmutable()) // Date de création
-                ->setModifiedAt($faker->boolean(50) ? new \DateTimeImmutable() : null); // Modifié ou non
+                ->setModifiedAt($faker->boolean(50) ? new \DateTimeImmutable() : null); 
 
             $manager->persist($site);
         }
 
-        $manager->flush(); // Enregistre les données en base
+        $manager->flush(); 
     }
     
 }

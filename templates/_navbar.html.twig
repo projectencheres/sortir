@@ -101,11 +101,19 @@
 							<a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">Gerer les sites</a>
 							<ul class="dropdown-menu">
 								<li>
+									<a class="dropdown-item" href="{{ path('app_create_site')}}">Créer un site</a>
+								</li>
+								<li>
+									<a class="dropdown-item" href="{{ path("app_all_site")}}">Liste des sites</a>
+								</li>
+								<li><hr class="dropdown-divider"></li>
+								<li>
 									<a class="dropdown-item" href="#">Créer un lieu</a>
 								</li>
 								<li>
 									<a class="dropdown-item" href="#">Liste des lieux</a>
 								</li>
+								
 							</ul>
 						</li>
 					{% endif %}
