@@ -1,0 +1,36 @@
+{% extends 'base.html.twig' %}
+
+{% block title %} Lieux {% endblock %}
+
+{% block body %}
+    <div class="container mt-5">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1>Lieux</h1>
+            <a href="{{ path('app_lieu_create') }}" class="btn btn-success btn-sm">Créer un lieu</a>
+        </div>
+        <div class="row">
+            {% for lieu in lieux %}
+                <div class="col-md-4">
+                    <div class="card shadow-sm mb-4">
+                        <div class="card-body">
+                            <h5 class="card-title text-primary">{{ lieu.nom }}</h5>
+                            <p class="card-text">
+                                <strong>Rue:</strong> {{ lieu.rue }}<br>
+                                <strong>Code Postal:</strong> {{ lieu.codePostal }}<br>
+                                <strong>Coordonnées:</strong> {{ lieu.longitude }}, {{ lieu.latitude }}<br>
+                                <strong>Ville:</strong> {{ lieu.ville }}<br>
+                                <strong>Site: </strong>{{ lieu.site ? lieu.site.nom : 'Non defini' }}<br>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            {% else %}
+                <div class="col-12">
+                    <div class="alert alert-warning text-center">
+                        Aucun lieu n'est disponible pour le moment.
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}

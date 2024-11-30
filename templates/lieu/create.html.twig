@@ -1,0 +1,23 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Creation de lieu{% endblock %}
+
+{% block body %}
+    {{ form_start(lieuForm) }}
+    {{ form_row(lieuForm.nom) }}
+    {{ form_row(lieuForm.rue) }}
+    {{ form_row(lieuForm.codePostal) }}
+    {{ form_row(lieuForm.longitude) }}
+    {{ form_row(lieuForm.latitude) }}
+    {{ form_row(lieuForm.ville) }}
+    <div class="col-12 mt-4">
+        <button class="btn btn-sm btn-primary" type="submit">Enregistrer</button>
+        <a href="{{ path('app_lieu_list') }}" class="btn btn-sm btn-secondary">Annuler</a>
+    </div>
+    {{ form_end(lieuForm) }}
+
+{% endblock %}
+
+
+
+
