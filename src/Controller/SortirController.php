@@ -32,65 +32,55 @@ class SortirController extends AbstractController
     )
     {
     }
-    
+
         #[Route('/sortie/create', name: 'app_sortie_create')]
         public function create(
             Request $request,
             EntityManagerInterface $entityManager,
             LieuRepository $lieuRepository,
-            VilleService $villeService,
-
         ): Response {
-
             $sortie = new Sortie();
-            $form = $this->createForm(SortieCreateType::class, $sortie);
-            $form->handleRequest($request);
+
+            // Récupérer le participant et son site
             $participant = $this->participantRepository->find($this->getUser()->getId());
             $site = $participant->getSite();
 
+            if (!$site) {
+                throw new \Exception('Le site associé au participant est introuvable.');
+            }
+
             $form = $this->createForm(SortieCreateType::class, $sortie, [
-                 'site' => $site,
+                'site' => $site, 
             ]);
             $form->handleRequest($request);
 
-            $villes = [];
-            
             if ($form->isSubmitted() && $form->isValid()) {
-
-                $codePostale = $request->get('codePostal')->getData();
-                //dd($codePostale);
-                if ($codePostale) {
-                    try {
-                        $villes = $this->villeService->getVillesparCodePostal($codePostale);
-                    } catch (\Exception $e) {
-                        $this->addFlash('error', 'Erreur lors de la récupération des villes : ' . $e->getMessage());
-                    }
-                }
-                // Vérifier si l'utilisateur a sélectionné un lieu existant
+                // Gestion du lieu
                 $lieu = $form->get('lieuCreation')->getData();
-                if($lieu instanceof Lieu){
+                if ($lieu instanceof Lieu) {
                     $entityManager->persist($lieu);
                     $sortie->setLieu($lieu);
                 }
 
-                $sortie->setSite($site);
-                $sortie->setEtat('Créée');
-                $sortie->addParticipant($participant);
-                $sortie->setOrganisateur($this->getUser()); // Associer l'organisateur
+                $sortie->setSite($site); 
+                $sortie->setEtat('Créée'); 
+                $sortie->addParticipant($participant); 
+                $sortie->setOrganisateur($this->getUser()); 
+
                 $entityManager->persist($sortie);
                 $entityManager->flush();
 
+               
                 $this->addFlash('success', 'La sortie a été créée avec succès.');
                 return $this->redirectToRoute('app_all_sorties');
-                //dd($form);
             }
 
             return $this->render('sortir/create.html.twig', [
                 'form' => $form->createView(),
                 'sortie' => $sortie,
-                'villes' => $villes,
             ]);
-    }
+        }
+
 
     #[Route('/sorties/list', name: 'app_all_sorties', methods: ['GET', 'POST'])]
     public function index(Request $request): Response
