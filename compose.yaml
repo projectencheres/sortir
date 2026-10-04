@@ -1,20 +1,59 @@
-
 services:
-###> doctrine/doctrine-bundle ###
-  database:
-    image: postgres:${POSTGRES_VERSION:-16}-alpine
+  app:
+    build: .                        # construit l'image à partir du Dockerfile
+    container_name: sortir-app
+    ports:
+      - "8000:80"                   # appli sur localhost:8000
     environment:
-      POSTGRES_DB: ${POSTGRES_DB:-app}
-      # You should definitely change the password in production
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-!ChangeMe!}
-      POSTGRES_USER: ${POSTGRES_USER:-app}
+      DATABASE_URL: "mysql://root:@db:3306/sortir?serverVersion=8.0.31"   # 'db' = nom du service
+      INVITATION_SECRET: "test-secret"              # requis par services.yaml
+      MAILER_DSN: "smtp://mailer:2525"                                    # emails capturés par Mailpit
     volumes:
-      - database_data:/var/lib/postgresql/data:rw
-      # You may use a bind-mounted host directory instead, so that it is harder to accidentally remove the volume and lose all your data!
-      # - ./docker/db/data:/var/lib/postgresql/data:rw
-###< doctrine/doctrine-bundle ###
+      - sortir_uploads:/var/www/html/public/images/profile                # photos de profil conservées
+    depends_on:
+      - db
+      - mailer
+    networks:
+      - sortirNetwork
+
+  db:
+    image: mysql:8.0
+    container_name: sortir-db
+    restart: always
+    environment:
+      MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+      MYSQL_DATABASE: sortir
+    ports:
+      - "3306:3306"
+    volumes:
+      - sortir_mysql_data:/var/lib/mysql
+    networks:
+      - sortirNetwork
+
+  mailer:
+    image: changemakerstudiosus/papercut-smtp:latest   # faux serveur mail (comme Papercut en local)
+    container_name: sortir-papercut
+    ports:
+      - "8025:8080"                 # interface web sur localhost:8025
+    networks:
+      - sortirNetwork
+
+  phpmyadmin:
+    image: phpmyadmin
+    container_name: sortir-pma
+    environment:
+      PMA_HOST: db
+    ports:
+      - "8080:80"
+    depends_on:
+      - db
+    networks:
+      - sortirNetwork
 
 volumes:
-###> doctrine/doctrine-bundle ###
-  database_data:
-###< doctrine/doctrine-bundle ###
+  sortir_mysql_data:
+  sortir_uploads:
+
+networks:
+  sortirNetwork:
+    name: sortir-network
