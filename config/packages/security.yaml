@@ -18,6 +18,7 @@ security:
     main:
       lazy: true
       provider: app_user_provider
+      user_checker: App\Security\UserChecker
       form_login:
         login_path: app_login
         check_path: app_login 
@@ -39,8 +40,8 @@ security:
           session: ~
 
   access_control:
-    - { path: ^/(login|register|reset_password|home), roles: PUBLIC_ACCESS }
-    - { path: ^/(participant|sortie|sorties), roles: ROLE_USER }
+    - { path: ^/(login|register|reset_password|home)(/|$), roles: PUBLIC_ACCESS }
+    - { path: ^/(participant|sortie|sorties|lieu), roles: ROLE_USER }
     - { path: ^/admin, roles: ROLE_ADMIN }
 
 when@test:

@@ -275,9 +275,12 @@ class ParticipantController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}/deactivate', name: 'deactivate', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
-    public function deactivateParticipant(int $id): Response
+    #[Route('/{id}/deactivate', name: 'deactivate', requirements: ['id' => '\d+'], methods: ['POST'])]
+    public function deactivateParticipant(int $id, Request $request): Response
     {
+        if (!$this->isCsrfTokenValid('participant_deactivate_' . $id, $request->request->get('_token'))) {
+            throw $this->createAccessDeniedException('Jeton CSRF invalide.');
+        }
         $participant = $this->participantRepository->find($id);
 
         if (!$participant) {
@@ -300,9 +303,13 @@ class ParticipantController extends AbstractController
         return $this->redirectToRoute('app_admin_participants_list');
     }
 
-    #[Route('/{id}/reactivate', name: 'reactivate', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
-    public function reactivateParticipant(int $id): Response
+    #[Route('/{id}/reactivate', name: 'reactivate', requirements: ['id' => '\d+'], methods: ['POST'])]
+    public function reactivateParticipant(int $id, Request $request): Response
     {
+        if (!$this->isCsrfTokenValid('participant_reactivate_' . $id, $request->request->get('_token'))) {
+            throw $this->createAccessDeniedException('Jeton CSRF invalide.');
+        }
+
         $participant = $this->participantRepository->find($id);
 
         if (!$participant) {
@@ -326,8 +333,11 @@ class ParticipantController extends AbstractController
     }
 
 
-    #[Route('/{id}/delete', name: 'delete', requirements: ['id' => '\d+'], methods: ['GET'])]
-    public function deleteParticipant(int $id): Response {
+    #[Route('/{id}/delete', name: 'delete', requirements: ['id' => '\d+'], methods: ['POST'])]
+    public function deleteParticipant(int $id, Request $request): Response {
+        if (!$this->isCsrfTokenValid('participant_delete_' . $id, $request->request->get('_token'))) {
+            throw $this->createAccessDeniedException('Jeton CSRF invalide.');
+        }
 
         $currentUser = $this->getUser();
         $participant = $this->participantRepository->find($id);

@@ -40,10 +40,10 @@
         .table tbody tr:hover {
             background-color: #e9ecef;
         }
-        .action-buttons a {
+        .action-buttons a, .action-buttons form {
             margin: 0 3px;
         }
-        .action-buttons a.btn {
+        .action-buttons .btn {
             padding: 5px 10px;
             font-size: 0.85rem;
         }
@@ -69,13 +69,22 @@
                         {% if is_granted('ROLE_ADMIN') %}
                             <td class="action-buttons">
                                 <a href="{{ path('app_admin_participants_detail', {'id': participant.id}) }}" class="btn btn-info btn-sm">Voir</a>
-                                {% if participant.actif is null or participant.actif == 0 %}
-                                    <a href="{{ path('app_admin_participants_reactivate', {'id': participant.id}) }}" class="btn btn-secondary btn-sm">Activer</a>
+                                 {% if participant.actif is null or participant.actif == 0 %}
+                                    <form method="post" action="{{ path('app_admin_participants_reactivate', {'id': participant.id}) }}" class="d-inline">
+                                        <input type="hidden" name="_token" value="{{ csrf_token('participant_reactivate_' ~ participant.id) }}">
+                                        <button type="submit" class="btn btn-secondary btn-sm">Activer</button>
+                                    </form>
                                 {% else %}
-                                    <a href="{{ path('app_admin_participants_deactivate', {'id': participant.id}) }}" class="btn btn-warning btn-sm">Desactiver</a>
+                                    <form method="post" action="{{ path('app_admin_participants_deactivate', {'id': participant.id}) }}" class="d-inline">
+                                        <input type="hidden" name="_token" value="{{ csrf_token('participant_deactivate_' ~ participant.id) }}">
+                                        <button type="submit" class="btn btn-warning btn-sm">Desactiver</button>
+                                    </form>
                                 {% endif %}
-                                <a href="{{ path('app_admin_participants_delete', {'id': participant.id}) }}" class="btn btn-danger btn-sm"
-                                   onclick="return confirm('Êtes-vous sûr de vouloir supprimer ce participant ?')">Supprimer</a>
+                                <form method="post" action="{{ path('app_admin_participants_delete', {'id': participant.id}) }}" class="d-inline"
+                                      onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce participant ?')">
+                                    <input type="hidden" name="_token" value="{{ csrf_token('participant_delete_' ~ participant.id) }}">
+                                    <button type="submit" class="btn btn-danger btn-sm">Supprimer</button>
+                                </form>
                             </td>
                         {% endif %}
                     </tr>
